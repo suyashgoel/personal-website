@@ -1,0 +1,85 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [vector]
+}
+
+enum EntryType {
+  text
+  image
+  link
+}
+
+model Entry {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  title String
+  slug  String    @unique
+  type  EntryType 
+
+  embedding Unsupported("vector(1536)")?
+
+  textContent   TextContent?
+  imageContent  ImageContent?
+  linkContent   LinkContent?
+
+  @@map("entries")
+}
+
+model TextContent {
+  id      Int    @id @default(autoincrement())
+  title   String
+  body    String 
+
+  entryId Int    @unique
+  entry   Entry  @relation(fields: [entryId], references: [id], onDelete: Cascade)
+
+  @@map("entry_text")
+}
+
+model ImageContent {
+  id      Int     @id @default(autoincrement())
+  url     String
+  title String
+  caption String
+  
+  width   Int
+  height  Int
+
+  entryId Int   @unique
+  entry   Entry @relation(fields: [entryId], references: [id], onDelete: Cascade)
+
+  @@map("entry_images")
+}
+
+model LinkContent {
+  id           Int     @id @default(autoincrement())
+  url          String
+  
+  resolvedTitle String?
+  resolvedDesc  String?
+  resolvedImage String?
+  
+  subtype      String  @default("")
+
+  entryId Int   @unique
+  entry   Entry @relation(fields: [entryId], references: [id], onDelete: Cascade)
+
+  @@map("entry_links")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  hashedPassword  String
+  createdAt DateTime @default(now())
+
+  @@map("users")
+}
