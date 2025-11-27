@@ -1,28 +1,63 @@
-import Fastify, { FastifyServerOptions } from "fastify";
-import cors from "@fastify/cors";
+import cookie from '@fastify/cookie';
+import cors from '@fastify/cors';
+import jwt from '@fastify/jwt';
+import Fastify, {
+  FastifyBaseLogger,
+  FastifyReply,
+  FastifyRequest,
+  FastifyServerOptions,
+} from 'fastify';
 import {
   serializerCompiler,
   validatorCompiler,
   ZodTypeProvider,
-} from "fastify-type-provider-zod";
-import { logger } from "./lib/logger";
+} from 'fastify-type-provider-zod';
+import { cookieConfig } from './lib/cookie';
+import { env } from './lib/env';
+import { logger } from './lib/logger';
+import authRoutes from './routes/auth';
 
 export function buildApp(opts: FastifyServerOptions = {}) {
   const app = Fastify({
     ...opts,
-    logger,
+    loggerInstance: logger as FastifyBaseLogger,
   }).withTypeProvider<ZodTypeProvider>();
 
   app.setValidatorCompiler(validatorCompiler);
   app.setSerializerCompiler(serializerCompiler);
 
   app.register(cors, {
-    origin: "*",
+    origin: '*',
   });
 
-  app.get("/health", async () => {
-    return { status: "ok", brain: "active" };
+  app.register(cookie, {
+    secret: env.COOKIE_SECRET,
   });
+
+  app.register(jwt, {
+    secret: env.JWT_SECRET,
+    cookie: cookieConfig,
+    sign: {
+      expiresIn: '7d',
+    },
+  });
+
+  app.decorate(
+    'authenticate',
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      try {
+        await request.jwtVerify();
+      } catch (err) {
+        reply.code(401).send({ error: 'Unauthorized' });
+      }
+    }
+  );
+
+  app.get('/health', async () => {
+    return { status: 'ok', brain: 'active' };
+  });
+
+  app.register(authRoutes, { prefix: '/auth' });
 
   return app;
 }

@@ -1,6 +1,6 @@
-import { z } from "zod";
+import { z } from 'zod';
 
-export const entryTypeSchema = z.enum(["text", "image", "link"]);
+export const entryTypeSchema = z.enum(['text', 'image', 'link']);
 
 export const entrySchema = z.object({
   id: z.number().int().positive(),
@@ -38,15 +38,33 @@ export const linkContentSchema = z.object({
   resolvedTitle: z.string().optional().nullable(),
   resolvedDesc: z.string().optional().nullable(),
   resolvedImage: z.string().url().optional().nullable(),
-  subtype: z.string().default(""),
+  subtype: z.string().default(''),
   entryId: z.number().int().positive(),
 });
+
+export const roleSchema = z.enum(['admin', 'user']);
 
 export const userSchema = z.object({
   id: z.number().int().positive(),
   email: z.string().email(),
+  role: roleSchema,
+  name: z.string().min(1),
   hashedPassword: z.string().min(1),
   createdAt: z.coerce.date(),
+});
+
+export const loginRequestSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(1),
+});
+
+export const registerRequestSchema = loginRequestSchema.extend({
+  name: z.string().min(1),
+});
+
+export const userResponseSchema = userSchema.omit({
+  hashedPassword: true,
+  createdAt: true,
 });
 
 export type Entry = z.infer<typeof entrySchema>;
@@ -54,3 +72,7 @@ export type TextContent = z.infer<typeof textContentSchema>;
 export type ImageContent = z.infer<typeof imageContentSchema>;
 export type LinkContent = z.infer<typeof linkContentSchema>;
 export type User = z.infer<typeof userSchema>;
+export type LoginRequest = z.infer<typeof loginRequestSchema>;
+export type RegisterRequest = z.infer<typeof registerRequestSchema>;
+export type UserResponse = z.infer<typeof userResponseSchema>;
+export type Role = z.infer<typeof roleSchema>;

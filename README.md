@@ -1,30 +1,35 @@
 # Suyash's Website
+
 A production-ready personal platform that is a living archive of who I am. Static about page paired with a dynamic semantic knowledge graph of my thoughts powered by embeddings.
 
 ---
 
 ## Stack
-| Component | Technology |
-|-----------|-----------|
-| Frontend | Next.js 15, React 19, TailwindCSS, Framer Motion |
-| Backend | Fastify, TypeScript, Zod |
-| Database | PostgreSQL 16 with pgvector |
-| Search | Embeddings + full-text search |
-| Caching | Redis |
-| Infrastructure | Docker, GitHub Actions, AWS |
+
+| Component      | Technology                                       |
+| -------------- | ------------------------------------------------ |
+| Frontend       | Next.js 15, React 19, TailwindCSS, Framer Motion |
+| Backend        | Fastify, TypeScript, Zod                         |
+| Database       | PostgreSQL 16 with pgvector                      |
+| Search         | Embeddings + full-text search                    |
+| Caching        | Redis                                            |
+| Infrastructure | Docker, GitHub Actions, AWS                      |
 
 ---
 
 ## Core Features
 
 **About Page**
+
 - Static, beautifully designed intro with background, experience and interests
 
 **Admin Panel**
+
 - Custom JWT-based authentication
 - Protected interface to create and edit entries
 
 **Knowledge Graph Navigation**
+
 - Search page where you enter a query
 - Query takes you to the single most relevant entry
 - At the bottom of each entry, two types of recommendations:
@@ -38,11 +43,13 @@ A production-ready personal platform that is a living archive of who I am. Stati
 ## Architecture
 
 **Deployment:**
+
 - Dockerized application
 - AWS with RDS PostgreSQL, ElastiCache Redis
 - Load balancer in front, secrets managed securely
 
 **Application:**
+
 - Separate frontend and backend (decoupled)
 - Frontend calls backend API for all dynamic data
 - Backend handles entries, auth, recommendations, embeddings, and caching
@@ -50,6 +57,7 @@ A production-ready personal platform that is a living archive of who I am. Stati
 ---
 
 ## Authentication
+
 - Custom JWT-based auth
 - Admin login page with email/password
 - Protected admin routes for creating/editing entries
@@ -60,6 +68,7 @@ A production-ready personal platform that is a living archive of who I am. Stati
 ## Data Model
 
 Entries with flexible content based on type. For example:
+
 - **Song** (Spotify link, why it matters)
 - **Photo** (image URL, context)
 - **Writing** (text content, optional time period)
@@ -81,6 +90,7 @@ Each entry gets an embedding vector for semantic search stored in PostgreSQL wit
 **Query endpoint** - Takes natural language query, returns best matching entry
 
 **Recommendation endpoints:**
+
 - Get entries related to original query context
 - Get entries related to current entry
 
@@ -91,6 +101,7 @@ Each entry gets an embedding vector for semantic search stored in PostgreSQL wit
 ## Navigation Strategy
 
 **How it works:**
+
 - User enters query on search page
 - Backend finds single best matching entry using hybrid search (semantic + full-text)
 - Entry displays with two recommendation sections at bottom:
@@ -102,6 +113,7 @@ Each entry gets an embedding vector for semantic search stored in PostgreSQL wit
 ---
 
 ## Embeddings Strategy
+
 - Generate embedding once when entry is created or updated
 - Store embedding vector in PostgreSQL (pgvector column)
 - Cache embeddings in Redis for fast access
@@ -113,6 +125,7 @@ Each entry gets an embedding vector for semantic search stored in PostgreSQL wit
 ## Caching Strategy
 
 **What gets cached:**
+
 - Query-to-entry mappings (query → best entry)
 - Related entries for each entry (precomputed similar entries)
 - Query-based recommendations for common queries
@@ -120,6 +133,7 @@ Each entry gets an embedding vector for semantic search stored in PostgreSQL wit
 - Frequently read entries
 
 **Invalidation approach:**
+
 - Entries rarely change after creation, so longer TTLs are fine
 - Invalidate specific caches on entry updates/deletes
 - Start simple with TTL-based expiration, optimize later
@@ -129,12 +143,14 @@ Each entry gets an embedding vector for semantic search stored in PostgreSQL wit
 ## Rate Limiting
 
 **Key routes to protect:**
+
 - Query endpoint (prevent embedding API abuse)
 - Recommendation endpoints (reasonable limits)
 - Login endpoint (prevent brute force)
 - Public read endpoints (reasonable limits)
 
 **Implementation:**
+
 - Redis-based counters with appropriate time windows
 - Return 429 when limits exceeded
 - Admin routes have higher/no limits

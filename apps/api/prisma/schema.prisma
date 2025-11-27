@@ -15,6 +15,11 @@ enum EntryType {
   link
 }
 
+enum RoleType {
+  admin
+  user
+}
+
 model Entry {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
@@ -77,7 +82,9 @@ model LinkContent {
 
 model User {
   id        Int      @id @default(autoincrement())
+  name      String
   email     String   @unique
+  role      RoleType @default(user)
   hashedPassword  String
   createdAt DateTime @default(now())
 

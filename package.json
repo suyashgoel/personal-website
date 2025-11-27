@@ -7,13 +7,16 @@
     "build": "pnpm -r run build",
     "lint": "pnpm -r run lint",
     "db:up": "docker-compose up -d",
-    "db:down": "docker-compose down"
+    "db:down": "docker-compose down",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\""
   },
   "devDependencies": {
-    "typescript": "^5.6.3",
     "@types/node": "^22.8.0",
+    "prettier": "^3.3.3",
+    "prettier-plugin-organize-imports": "^4.3.0",
     "tsx": "^4.19.1",
-    "prettier": "^3.3.3"
+    "typescript": "^5.6.3"
   },
   "packageManager": "pnpm@10.17.0"
 }

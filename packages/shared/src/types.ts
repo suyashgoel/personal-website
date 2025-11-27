@@ -1,7 +1,11 @@
 export type {
   Entry,
-  TextContent,
   ImageContent,
   LinkContent,
+  LoginRequest,
+  RegisterRequest,
+  Role,
+  TextContent,
   User,
-} from "./schema";
+  UserResponse,
+} from './schema';
