@@ -27,7 +27,7 @@ export function buildApp(opts: FastifyServerOptions = {}) {
   app.setSerializerCompiler(serializerCompiler);
 
   app.register(cors, {
-    origin: true, // Remove this in production
+    origin: env.NODE_ENV === 'production' ? false : true,
     credentials: true,
   });
 
@@ -50,6 +50,7 @@ export function buildApp(opts: FastifyServerOptions = {}) {
         await request.jwtVerify();
       } catch (err) {
         reply.code(401).send({ error: 'Unauthorized' });
+        return;
       }
     }
   );
