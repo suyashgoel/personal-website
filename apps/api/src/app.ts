@@ -27,7 +27,8 @@ export function buildApp(opts: FastifyServerOptions = {}) {
   app.setSerializerCompiler(serializerCompiler);
 
   app.register(cors, {
-    origin: '*',
+    origin: true, // Remove this in production
+    credentials: true,
   });
 
   app.register(cookie, {

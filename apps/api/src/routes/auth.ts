@@ -6,7 +6,7 @@ import {
   userResponseSchema,
 } from '@personal-website/shared';
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
-import { clearCookieConfig } from '../lib/cookie';
+import { clearCookieConfig, cookieConfig } from '../lib/cookie';
 import {
   InvalidCredentialsError,
   UserAlreadyExistsError,
@@ -29,7 +29,11 @@ export default async function authRoutes(fastify: FastifyInstance) {
     async (request: FastifyRequest, reply: FastifyReply) => {
       try {
         const user = await register(request.body as RegisterRequest);
-        await reply.jwtSign({ sub: user.id, role: user.role });
+        reply.setCookie(
+          'session',
+          await reply.jwtSign({ sub: user.id, role: user.role } as JWTPayload),
+          cookieConfig
+        );
         return reply.code(201).send(user);
       } catch (err) {
         if (err instanceof UserAlreadyExistsError) {
@@ -54,7 +58,11 @@ export default async function authRoutes(fastify: FastifyInstance) {
     async (request: FastifyRequest, reply: FastifyReply) => {
       try {
         const user = await login(request.body as LoginRequest);
-        await reply.jwtSign({ sub: user.id, role: user.role });
+        reply.setCookie(
+          'session',
+          await reply.jwtSign({ sub: user.id, role: user.role } as JWTPayload),
+          cookieConfig
+        );
         return reply.code(200).send(user);
       } catch (err) {
         if (err instanceof InvalidCredentialsError) {
@@ -72,7 +80,7 @@ export default async function authRoutes(fastify: FastifyInstance) {
       preHandler: fastify.authenticate,
     },
     async (_, reply: FastifyReply) => {
-      reply.clearCookie('session', clearCookieConfig);
+      reply.clearCookie(cookieConfig.cookieName, clearCookieConfig);
       return reply.code(200).send({ ok: true });
     }
   );

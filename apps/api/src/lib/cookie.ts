@@ -1,6 +1,7 @@
 import { env } from './env';
 
 export const cookieConfig = {
+  path: '/',
   cookieName: 'session',
   httpOnly: true,
   secure: env.NODE_ENV === 'production',
@@ -10,7 +11,9 @@ export const cookieConfig = {
 } as const;
 
 export const clearCookieConfig = {
+  path: cookieConfig.path,
   httpOnly: cookieConfig.httpOnly,
   secure: cookieConfig.secure,
   sameSite: cookieConfig.sameSite,
+  signed: cookieConfig.signed,
 } as const;
