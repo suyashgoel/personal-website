@@ -34,6 +34,7 @@ export default async function authRoutes(fastify: FastifyInstance) {
           await reply.jwtSign({ sub: user.id, role: user.role } as JWTPayload),
           cookieConfig
         );
+        request.log.info({ userId: user.id }, 'User registered');
         return reply.code(201).send(user);
       } catch (err) {
         if (err instanceof UserAlreadyExistsError) {
@@ -63,6 +64,7 @@ export default async function authRoutes(fastify: FastifyInstance) {
           await reply.jwtSign({ sub: user.id, role: user.role } as JWTPayload),
           cookieConfig
         );
+        request.log.info({ userId: user.id }, 'User logged in');
         return reply.code(200).send(user);
       } catch (err) {
         if (err instanceof InvalidCredentialsError) {
@@ -79,8 +81,10 @@ export default async function authRoutes(fastify: FastifyInstance) {
     {
       preHandler: fastify.authenticate,
     },
-    async (_, reply: FastifyReply) => {
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      const user = request.user as JWTPayload;
       reply.clearCookie(cookieConfig.cookieName, clearCookieConfig);
+      request.log.info({ userId: user.sub }, 'User logged out');
       return reply.code(200).send({ ok: true });
     }
   );
@@ -100,6 +104,7 @@ export default async function authRoutes(fastify: FastifyInstance) {
       const userId = user.sub;
       try {
         const currentUser = await getCurrentUser(userId);
+        request.log.info({ userId: currentUser.id }, 'User fetched');
         return reply.send(currentUser);
       } catch (err) {
         if (err instanceof UserNotFoundError) {
