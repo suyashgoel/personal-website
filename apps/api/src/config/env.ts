@@ -8,10 +8,14 @@ const envSchema = z.object({
   PORT: z.coerce.number().default(3000),
   DATABASE_URL: z.string().url(),
   LOG_LEVEL: z.enum(['debug', 'info', 'warn', 'error']).default('info'),
-  REDIS_URL: z.string().url().optional(),
+  REDIS_URL: z.string().url(),
   JWT_SECRET: z.string().min(32),
   COOKIE_SECRET: z.string().min(32),
   OPENAI_API_KEY: z.string(),
+  AWS_ACCESS_KEY_ID: z.string(),
+  AWS_SECRET_ACCESS_KEY: z.string(),
+  AWS_REGION: z.string(),
+  S3_BUCKET_NAME: z.string(),
 });
 
 const parsed = envSchema.safeParse(process.env);

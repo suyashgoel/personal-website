@@ -25,3 +25,10 @@ export class OpenAIError extends Error {
     this.name = 'OpenAIError';
   }
 }
+
+export class S3Error extends Error {
+  constructor() {
+    super('S3 request failed');
+    this.name = 'S3Error';
+  }
+}
