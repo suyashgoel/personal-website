@@ -3,7 +3,6 @@ import {
   RegisterRequest,
   UserResponse,
 } from '@personal-website/shared';
-import bcrypt from 'bcrypt';
 import { db } from '../clients/db';
 import { logger } from '../clients/logger';
 import {
@@ -11,18 +10,7 @@ import {
   UserAlreadyExistsError,
   UserNotFoundError,
 } from '../errors';
-const SALT_ROUNDS = 12;
-
-async function hashPassword(password: string): Promise<string> {
-  return await bcrypt.hash(password, SALT_ROUNDS);
-}
-
-async function verifyPassword(
-  password: string,
-  hash: string
-): Promise<boolean> {
-  return await bcrypt.compare(password, hash);
-}
+import { hashPassword, verifyPassword } from '../utils/auth';
 
 export async function register(user: RegisterRequest): Promise<UserResponse> {
   const existingUser = await db.user.findUnique({

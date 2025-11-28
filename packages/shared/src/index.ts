@@ -1,2 +1,1 @@
-export * from './schema';
-export * from './types';
+export * from './schema'; // zod schemas and types

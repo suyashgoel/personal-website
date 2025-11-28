@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+const ENTRY_TYPES = ['text', 'image', 'link'] as const;
 export const entryTypeSchema = z.enum(['text', 'image', 'link']);
 
 export const entrySchema = z.object({
@@ -67,6 +68,33 @@ export const userResponseSchema = userSchema.omit({
   createdAt: true,
 });
 
+const createBaseEntrySchema = z.object({
+  title: z.string().min(1),
+  body: z.string().min(1),
+});
+
+const createImageEntrySchema = z.object({
+  width: z.number().positive(),
+  height: z.number().positive(),
+});
+
+const createLinkEntrySchema = z.object({
+  url: z.string().url(),
+  subtype: z.string().optional(),
+});
+
+export const createEntrySchema = z.discriminatedUnion('type', [
+  createBaseEntrySchema.extend({ type: z.literal(ENTRY_TYPES[0]) }),
+  createBaseEntrySchema.extend({
+    type: z.literal(ENTRY_TYPES[1]),
+    image: createImageEntrySchema,
+  }),
+  createBaseEntrySchema.extend({
+    type: z.literal(ENTRY_TYPES[2]),
+    link: createLinkEntrySchema,
+  }),
+]);
+
 export type Entry = z.infer<typeof entrySchema>;
 export type TextContent = z.infer<typeof textContentSchema>;
 export type ImageContent = z.infer<typeof imageContentSchema>;
@@ -76,3 +104,4 @@ export type LoginRequest = z.infer<typeof loginRequestSchema>;
 export type RegisterRequest = z.infer<typeof registerRequestSchema>;
 export type UserResponse = z.infer<typeof userResponseSchema>;
 export type Role = z.infer<typeof roleSchema>;
+export type CreateEntryRequest = z.infer<typeof createEntrySchema>;
