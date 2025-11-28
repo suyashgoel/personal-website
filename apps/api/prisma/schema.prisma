@@ -26,34 +26,21 @@ model Entry {
   updatedAt DateTime @updatedAt
 
   title String
+  body  String
   slug  String    @unique
   type  EntryType 
 
-  embedding Unsupported("vector(1536)")?
+  embedding Unsupported("vector(3072)")?
 
-  textContent   TextContent?
   imageContent  ImageContent?
   linkContent   LinkContent?
 
   @@map("entries")
 }
 
-model TextContent {
-  id      Int    @id @default(autoincrement())
-  title   String
-  body    String 
-
-  entryId Int    @unique
-  entry   Entry  @relation(fields: [entryId], references: [id], onDelete: Cascade)
-
-  @@map("entry_text")
-}
-
 model ImageContent {
   id      Int     @id @default(autoincrement())
   url     String
-  title String
-  caption String
   
   width   Int
   height  Int
@@ -72,7 +59,7 @@ model LinkContent {
   resolvedDesc  String?
   resolvedImage String?
   
-  subtype      String  @default("")
+  subtype      String?
 
   entryId Int   @unique
   entry   Entry @relation(fields: [entryId], references: [id], onDelete: Cascade)
