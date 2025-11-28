@@ -83,7 +83,7 @@ export default async function authRoutes(fastify: FastifyInstance) {
     },
     async (request: FastifyRequest, reply: FastifyReply) => {
       const user = request.user as JWTPayload;
-      reply.clearCookie(cookieConfig.cookieName, clearCookieConfig);
+      reply.setCookie(clearCookieConfig.cookieName, '', clearCookieConfig);
       request.log.info({ userId: user.sub }, 'User logged out');
       return reply.code(200).send({ ok: true });
     }
