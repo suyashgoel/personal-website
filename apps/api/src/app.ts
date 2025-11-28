@@ -12,9 +12,9 @@ import {
   validatorCompiler,
   ZodTypeProvider,
 } from 'fastify-type-provider-zod';
-import { cookieConfig } from './lib/cookie';
-import { env } from './lib/env';
-import { logger } from './lib/logger';
+import { logger } from './clients/logger';
+import { cookieConfig } from './config/cookie';
+import { env } from './config/env';
 import authRoutes from './routes/auth';
 
 export function buildApp(opts: FastifyServerOptions = {}) {

@@ -6,12 +6,12 @@ import {
   userResponseSchema,
 } from '@personal-website/shared';
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
-import { clearCookieConfig, cookieConfig } from '../lib/cookie';
+import { clearCookieConfig, cookieConfig } from '../config/cookie';
 import {
   InvalidCredentialsError,
   UserAlreadyExistsError,
   UserNotFoundError,
-} from '../lib/errors';
+} from '../errors';
 import { getCurrentUser, login, register } from '../services/auth';
 import { JWTPayload } from '../types/fastify';
 
@@ -30,7 +30,7 @@ export default async function authRoutes(fastify: FastifyInstance) {
       try {
         const user = await register(request.body as RegisterRequest);
         reply.setCookie(
-          'session',
+          cookieConfig.cookieName,
           await reply.jwtSign({ sub: user.id, role: user.role } as JWTPayload),
           cookieConfig
         );
@@ -60,7 +60,7 @@ export default async function authRoutes(fastify: FastifyInstance) {
       try {
         const user = await login(request.body as LoginRequest);
         reply.setCookie(
-          'session',
+          cookieConfig.cookieName,
           await reply.jwtSign({ sub: user.id, role: user.role } as JWTPayload),
           cookieConfig
         );

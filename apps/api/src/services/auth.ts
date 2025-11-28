@@ -4,13 +4,13 @@ import {
   UserResponse,
 } from '@personal-website/shared';
 import bcrypt from 'bcrypt';
-import { db } from '../lib/db';
+import { db } from '../clients/db';
+import { logger } from '../clients/logger';
 import {
   InvalidCredentialsError,
   UserAlreadyExistsError,
   UserNotFoundError,
-} from '../lib/errors';
-import { logger } from '../lib/logger';
+} from '../errors';
 const SALT_ROUNDS = 12;
 
 async function hashPassword(password: string): Promise<string> {

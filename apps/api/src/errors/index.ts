@@ -18,3 +18,10 @@ export class UserNotFoundError extends Error {
     this.name = 'UserNotFoundError';
   }
 }
+
+export class OpenAIError extends Error {
+  constructor() {
+    super('OpenAI request failed');
+    this.name = 'OpenAIError';
+  }
+}

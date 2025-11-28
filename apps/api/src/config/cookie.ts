@@ -1,5 +1,7 @@
 import { env } from './env';
 
+const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
+
 export const cookieConfig = {
   path: '/', // Paths where cookie is sent
   cookieName: 'session', // Name of the cookie
@@ -7,15 +9,10 @@ export const cookieConfig = {
   secure: env.NODE_ENV === 'production', // Only send cookie over HTTPS in production
   sameSite: 'lax', // Prevents the cookie from being sent with cross-site requests
   signed: true, // Signs the cookie to prevent tampering
-  maxAge: 60 * 60 * 24 * 7 * 1000, // 7 days
+  maxAge: SEVEN_DAYS_MS, // 7 days
 } as const;
 
 export const clearCookieConfig = {
-  path: cookieConfig.path,
-  cookieName: cookieConfig.cookieName,
-  httpOnly: cookieConfig.httpOnly,
-  secure: cookieConfig.secure,
-  sameSite: cookieConfig.sameSite,
-  signed: cookieConfig.signed,
+  ...cookieConfig,
   maxAge: 0,
 } as const;

@@ -11,6 +11,7 @@ const envSchema = z.object({
   REDIS_URL: z.string().url().optional(),
   JWT_SECRET: z.string().min(32),
   COOKIE_SECRET: z.string().min(32),
+  OPENAI_API_KEY: z.string(),
 });
 
 const parsed = envSchema.safeParse(process.env);
