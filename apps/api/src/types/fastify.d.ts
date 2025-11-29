@@ -8,6 +8,7 @@ export type JWTPayload = {
 declare module 'fastify' {
   interface FastifyInstance {
     authenticate(request: FastifyRequest, reply: FastifyReply): Promise<void>;
+    authorize(request: FastifyRequest, reply: FastifyReply): Promise<void>;
   }
 
   interface FastifyRequest {

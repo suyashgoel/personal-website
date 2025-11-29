@@ -9,6 +9,56 @@ datasource db {
   extensions = [vector]
 }
 
+model Entry {
+  id           Int                    @id @default(autoincrement())
+  createdAt    DateTime               @default(now())
+  updatedAt    DateTime               @updatedAt
+  title        String
+  slug         String                 @unique
+  type         EntryType
+  embedding    Unsupported("vector")?
+  body         String
+  imageContent ImageContent?
+  linkContent  LinkContent?
+
+  @@map("entries")
+}
+
+model ImageContent {
+  id      Int    @id @default(autoincrement())
+  url     String
+  width   Int
+  height  Int
+  entryId Int    @unique
+  entry   Entry  @relation(fields: [entryId], references: [id], onDelete: Cascade)
+
+  @@map("entry_images")
+}
+
+model LinkContent {
+  id            Int     @id @default(autoincrement())
+  url           String
+  resolvedTitle String?
+  resolvedDesc  String?
+  resolvedImage String?
+  subtype       String?
+  entryId       Int     @unique
+  entry         Entry   @relation(fields: [entryId], references: [id], onDelete: Cascade)
+
+  @@map("entry_links")
+}
+
+model User {
+  id             Int      @id @default(autoincrement())
+  email          String   @unique
+  hashedPassword String
+  createdAt      DateTime @default(now())
+  name           String
+  role           RoleType @default(user)
+
+  @@map("users")
+}
+
 enum EntryType {
   text
   image
@@ -18,62 +68,4 @@ enum EntryType {
 enum RoleType {
   admin
   user
-}
-
-model Entry {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  title String
-  body  String
-  slug  String    @unique
-  type  EntryType 
-
-  embedding Unsupported("vector(3072)")?
-
-  imageContent  ImageContent?
-  linkContent   LinkContent?
-
-  @@map("entries")
-}
-
-model ImageContent {
-  id      Int     @id @default(autoincrement())
-  url     String
-  
-  width   Int
-  height  Int
-
-  entryId Int   @unique
-  entry   Entry @relation(fields: [entryId], references: [id], onDelete: Cascade)
-
-  @@map("entry_images")
-}
-
-model LinkContent {
-  id           Int     @id @default(autoincrement())
-  url          String
-  
-  resolvedTitle String?
-  resolvedDesc  String?
-  resolvedImage String?
-  
-  subtype      String?
-
-  entryId Int   @unique
-  entry   Entry @relation(fields: [entryId], references: [id], onDelete: Cascade)
-
-  @@map("entry_links")
-}
-
-model User {
-  id        Int      @id @default(autoincrement())
-  name      String
-  email     String   @unique
-  role      RoleType @default(user)
-  hashedPassword  String
-  createdAt DateTime @default(now())
-
-  @@map("users")
 }

@@ -1,6 +1,7 @@
 import cookie from '@fastify/cookie';
 import cors from '@fastify/cors';
 import jwt from '@fastify/jwt';
+import multipart from '@fastify/multipart';
 import Fastify, {
   FastifyBaseLogger,
   FastifyReply,
@@ -16,6 +17,7 @@ import { logger } from './clients/logger';
 import { cookieConfig } from './config/cookie';
 import { env } from './config/env';
 import authRoutes from './routes/auth';
+import { JWTPayload } from './types/fastify';
 
 export function buildApp(opts: FastifyServerOptions = {}) {
   const app = Fastify({
@@ -30,6 +32,8 @@ export function buildApp(opts: FastifyServerOptions = {}) {
     origin: env.NODE_ENV === 'production' ? false : true,
     credentials: true,
   });
+
+  app.register(multipart, { attachFieldsToBody: 'keyValues' });
 
   app.register(cookie, {
     secret: env.COOKIE_SECRET,
@@ -50,6 +54,17 @@ export function buildApp(opts: FastifyServerOptions = {}) {
         await request.jwtVerify();
       } catch (err) {
         reply.code(401).send({ error: 'Unauthorized' });
+        return;
+      }
+    }
+  );
+
+  app.decorate(
+    'authorize',
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      const user = request.user as JWTPayload;
+      if (user.role !== 'admin') {
+        reply.code(403).send({ error: 'Forbidden' });
         return;
       }
     }

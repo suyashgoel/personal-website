@@ -32,3 +32,10 @@ export class S3Error extends Error {
     this.name = 'S3Error';
   }
 }
+
+export class EntryAlreadyExistsError extends Error {
+  constructor() {
+    super('Entry with this slug already exists');
+    this.name = 'EntryAlreadyExistsError';
+  }
+}
