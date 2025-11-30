@@ -33,6 +33,8 @@ export const entryResponseSchema = z.object({
   linkContent: linkContentSchema.optional().nullable(),
 });
 
+export const entriesResponseSchema = z.array(entryResponseSchema);
+
 export const roleSchema = z.enum(['admin', 'user']);
 
 export const userSchema = z.object({
@@ -76,6 +78,10 @@ export const createEntrySchema = z.discriminatedUnion('type', [
   }),
 ]);
 
+export const getEntryParamsSchema = z.object({
+  slug: z.string(),
+});
+
 export type EntryResponse = z.infer<typeof entryResponseSchema>;
 export type ImageContent = z.infer<typeof imageContentSchema>;
 export type LinkContent = z.infer<typeof linkContentSchema>;
@@ -85,3 +91,4 @@ export type RegisterRequest = z.infer<typeof registerRequestSchema>;
 export type UserResponse = z.infer<typeof userResponseSchema>;
 export type Role = z.infer<typeof roleSchema>;
 export type CreateEntry = z.infer<typeof createEntrySchema>;
+export type GetEntryParams = z.infer<typeof getEntryParamsSchema>;

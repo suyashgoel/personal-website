@@ -1,7 +1,11 @@
-import { CreateEntry } from '@personal-website/shared';
+import { CreateEntry, EntryResponse } from '@personal-website/shared';
 import sharp from 'sharp';
 import { db } from '../clients/db';
-import { EntryAlreadyExistsError, ImageMetadataError } from '../errors';
+import {
+  EntryAlreadyExistsError,
+  EntryNotFoundError,
+  ImageMetadataError,
+} from '../errors';
 import { ImageMetadata } from '../types/image';
 import { UploadParams } from '../types/upload';
 import { generateEmbedding } from '../utils/openai';
@@ -13,7 +17,7 @@ const CONTENT_MAX_LENGTH = 10000;
 const ENTRY_TYPE_IMAGE = 'image';
 const ENTRY_TYPE_LINK = 'link';
 
-export async function createEntry(entry: CreateEntry) {
+export async function createEntry(entry: CreateEntry): Promise<EntryResponse> {
   const content = `${entry.title}\n${entry.body}`
     .trim()
     .slice(0, CONTENT_MAX_LENGTH);
@@ -96,11 +100,32 @@ export async function createEntry(entry: CreateEntry) {
         include: { imageContent: true, linkContent: true },
       });
     });
-    return result;
+    return result!;
   } catch (err) {
     if (imageMetadata) {
       await deleteFile(imageMetadata.key);
     }
     throw err;
   }
+}
+
+export async function getEntries(): Promise<EntryResponse[]> {
+  const entries = await db.entry.findMany({
+    orderBy: {
+      createdAt: 'desc',
+    },
+    include: { imageContent: true, linkContent: true },
+  });
+  return entries;
+}
+
+export async function getEntry(slug: string): Promise<EntryResponse> {
+  const entry = await db.entry.findUnique({
+    where: { slug: slug },
+    include: { imageContent: true, linkContent: true },
+  });
+  if (!entry) {
+    throw new EntryNotFoundError();
+  }
+  return entry;
 }

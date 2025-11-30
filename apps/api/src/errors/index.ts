@@ -1,7 +1,7 @@
 export class UserAlreadyExistsError extends Error {
   statusCode = 409;
   constructor() {
-    super(`User already exists`);
+    super('User already exists');
     this.name = 'UserAlreadyExistsError';
   }
 }
@@ -17,8 +17,16 @@ export class InvalidCredentialsError extends Error {
 export class UserNotFoundError extends Error {
   statusCode = 404;
   constructor() {
-    super(`User not found`);
+    super('User not found');
     this.name = 'UserNotFoundError';
+  }
+}
+
+export class EntryNotFoundError extends Error {
+  statusCode = 404;
+  constructor() {
+    super('Entry not found');
+    this.name = 'EntryNotFoundError';
   }
 }
 
