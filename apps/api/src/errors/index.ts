@@ -20,16 +20,22 @@ export class UserNotFoundError extends Error {
 }
 
 export class OpenAIError extends Error {
-  constructor() {
+  constructor(cause?: unknown) {
     super('OpenAI request failed');
     this.name = 'OpenAIError';
+    if (cause) {
+      this.cause = cause;
+    }
   }
 }
 
 export class S3Error extends Error {
-  constructor() {
+  constructor(cause?: unknown) {
     super('S3 request failed');
     this.name = 'S3Error';
+    if (cause) {
+      this.cause = cause;
+    }
   }
 }
 
@@ -37,5 +43,12 @@ export class EntryAlreadyExistsError extends Error {
   constructor() {
     super('Entry with this slug already exists');
     this.name = 'EntryAlreadyExistsError';
+  }
+}
+
+export class ImageMetadataError extends Error {
+  constructor() {
+    super('Failed to get image metadata');
+    this.name = 'ImageMetadataError';
   }
 }

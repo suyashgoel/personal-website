@@ -64,13 +64,13 @@ const createBaseEntrySchema = z.object({
 });
 
 export const createEntrySchema = z.discriminatedUnion('type', [
-  createBaseEntrySchema.extend({ type: z.literal(ENTRY_TYPES[0]) }),
+  createBaseEntrySchema.extend({ type: z.literal('text') }),
   createBaseEntrySchema.extend({
-    type: z.literal(ENTRY_TYPES[1]),
+    type: z.literal('image'),
     image: z.instanceof(Buffer),
   }),
   createBaseEntrySchema.extend({
-    type: z.literal(ENTRY_TYPES[2]),
+    type: z.literal('link'),
     url: z.string().url(),
     subtype: z.string().optional(),
   }),

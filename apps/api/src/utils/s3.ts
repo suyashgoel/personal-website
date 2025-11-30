@@ -14,8 +14,8 @@ export async function uploadFile({ key, body, contentType }: UploadParams) {
         ContentType: contentType,
       })
     );
-  } catch (error) {
-    throw new S3Error();
+  } catch (err) {
+    throw new S3Error(err);
   }
 }
 
@@ -27,8 +27,8 @@ export async function deleteFile(key: string) {
         Key: key,
       })
     );
-  } catch (error) {
-    throw new S3Error();
+  } catch (err) {
+    throw new S3Error(err);
   }
 }
 

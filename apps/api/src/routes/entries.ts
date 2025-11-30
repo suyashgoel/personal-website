@@ -4,7 +4,12 @@ import {
   entryResponseSchema,
 } from '@personal-website/shared';
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
-import { EntryAlreadyExistsError } from '../errors';
+import {
+  EntryAlreadyExistsError,
+  ImageMetadataError,
+  OpenAIError,
+  S3Error,
+} from '../errors';
 import { createEntry } from '../services/entries';
 
 export default async function entriesRoutes(fastify: FastifyInstance) {
@@ -26,7 +31,16 @@ export default async function entriesRoutes(fastify: FastifyInstance) {
         return reply.status(201).send(entry);
       } catch (err) {
         if (err instanceof EntryAlreadyExistsError) {
+          request.log.warn(err);
           return reply.status(409).send({ error: err.message });
+        }
+        if (
+          err instanceof OpenAIError ||
+          err instanceof S3Error ||
+          err instanceof ImageMetadataError
+        ) {
+          request.log.error(err);
+          return reply.status(500).send({ error: err.message });
         }
         request.log.error(err);
         return reply.status(500).send({ error: 'Internal server error' });

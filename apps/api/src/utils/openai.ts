@@ -9,6 +9,6 @@ export const generateEmbedding = async (text: string) => {
     });
     return response.data[0].embedding;
   } catch (err) {
-    throw new OpenAIError();
+    throw new OpenAIError(err);
   }
 };

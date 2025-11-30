@@ -38,6 +38,7 @@ export default async function authRoutes(fastify: FastifyInstance) {
         return reply.code(201).send(user);
       } catch (err) {
         if (err instanceof UserAlreadyExistsError) {
+          request.log.warn(err);
           return reply.code(409).send({ error: err.message });
         }
         request.log.error(err);
@@ -68,6 +69,7 @@ export default async function authRoutes(fastify: FastifyInstance) {
         return reply.code(200).send(user);
       } catch (err) {
         if (err instanceof InvalidCredentialsError) {
+          request.log.warn({ err, ip: request.ip });
           return reply.code(401).send({ error: err.message });
         }
         request.log.error(err);
@@ -108,6 +110,7 @@ export default async function authRoutes(fastify: FastifyInstance) {
         return reply.send(currentUser);
       } catch (err) {
         if (err instanceof UserNotFoundError) {
+          request.log.warn(err);
           return reply.code(404).send({ error: err.message });
         }
         request.log.error(err);

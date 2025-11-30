@@ -1,8 +1,7 @@
-import { CreateEntry, ENTRY_TYPES } from '@personal-website/shared';
+import { CreateEntry } from '@personal-website/shared';
 import sharp from 'sharp';
 import { db } from '../clients/db';
-import { logger } from '../clients/logger';
-import { EntryAlreadyExistsError } from '../errors';
+import { EntryAlreadyExistsError, ImageMetadataError } from '../errors';
 import { ImageMetadata } from '../types/image';
 import { UploadParams } from '../types/upload';
 import { generateEmbedding } from '../utils/openai';
@@ -10,6 +9,9 @@ import { deleteFile, getPublicUrl, uploadFile } from '../utils/s3';
 import { slugify } from '../utils/slug';
 
 const CONTENT_MAX_LENGTH = 10000;
+
+const ENTRY_TYPE_IMAGE = 'image';
+const ENTRY_TYPE_LINK = 'link';
 
 export async function createEntry(entry: CreateEntry) {
   const content = `${entry.title}\n${entry.body}`
@@ -22,17 +24,18 @@ export async function createEntry(entry: CreateEntry) {
     where: { slug: slug },
   });
   if (existingEntry) {
-    logger.error({ slug: slug }, 'Entry with this slug already exists');
     throw new EntryAlreadyExistsError();
   }
 
   let imageMetadata: ImageMetadata | null = null;
-  if (entry.type === ENTRY_TYPES[1]) {
+  if (entry.type === ENTRY_TYPE_IMAGE) {
     const image = entry.image;
 
     const metadata = await sharp(image).metadata();
-    const format = metadata.format;
-    const extension = format === 'jpg' ? 'jpeg' : format;
+    if (!metadata.format || !metadata.width || !metadata.height) {
+      throw new ImageMetadataError();
+    }
+    const extension = metadata.format === 'jpg' ? 'jpeg' : metadata.format;
 
     const uploadParams: UploadParams = {
       key: `${slug}.${extension}`,
@@ -61,11 +64,11 @@ export async function createEntry(entry: CreateEntry) {
 
       await tx.$executeRaw`
       UPDATE entries 
-      SET embedding = ${`[${embedding.join(',')}]`}::vector 
+      SET embedding = ${JSON.stringify(embedding)}::vector 
       WHERE id = ${newEntry.id}
     `;
 
-      if (entry.type === ENTRY_TYPES[1] && imageMetadata) {
+      if (entry.type === ENTRY_TYPE_IMAGE && imageMetadata) {
         // Image entry
         await tx.imageContent.create({
           data: {
@@ -77,7 +80,7 @@ export async function createEntry(entry: CreateEntry) {
         });
       }
 
-      if (entry.type === ENTRY_TYPES[2]) {
+      if (entry.type === ENTRY_TYPE_LINK) {
         // Link entry
         await tx.linkContent.create({
           data: {
@@ -96,18 +99,7 @@ export async function createEntry(entry: CreateEntry) {
     return result;
   } catch (err) {
     if (imageMetadata) {
-      try {
-        await deleteFile(imageMetadata.key);
-        logger.info(
-          { key: imageMetadata.key },
-          'Cleaned up orphaned S3 file after DB failure'
-        );
-      } catch (err) {
-        logger.error(
-          { err: err, key: imageMetadata.key },
-          'Failed to cleanup orphaned S3 file'
-        );
-      }
+      await deleteFile(imageMetadata.key);
     }
     throw err;
   }

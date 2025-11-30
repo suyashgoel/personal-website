@@ -4,7 +4,6 @@ import {
   UserResponse,
 } from '@personal-website/shared';
 import { db } from '../clients/db';
-import { logger } from '../clients/logger';
 import {
   InvalidCredentialsError,
   UserAlreadyExistsError,
@@ -23,7 +22,6 @@ export async function register(user: RegisterRequest): Promise<UserResponse> {
   });
 
   if (existingUser) {
-    logger.warn({ userId: existingUser.id }, 'User already exists');
     throw new UserAlreadyExistsError();
   }
 
@@ -60,7 +58,6 @@ export async function login(user: LoginRequest): Promise<UserResponse> {
   });
 
   if (!existingUser) {
-    logger.warn({ email: user.email }, 'Invalid email');
     throw new InvalidCredentialsError();
   }
 
@@ -70,7 +67,6 @@ export async function login(user: LoginRequest): Promise<UserResponse> {
   );
 
   if (!isPasswordValid) {
-    logger.warn({ userId: existingUser.id }, 'Invalid password');
     throw new InvalidCredentialsError();
   }
 
@@ -91,7 +87,6 @@ export async function getCurrentUser(userId: number): Promise<UserResponse> {
   });
 
   if (!user) {
-    logger.warn({ userId: userId }, 'User not found');
     throw new UserNotFoundError();
   }
 
