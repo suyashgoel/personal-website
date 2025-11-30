@@ -1,0 +1,1 @@
+ALTER TABLE entries ALTER COLUMN embedding TYPE vector(3072);

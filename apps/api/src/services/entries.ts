@@ -81,8 +81,8 @@ export async function createEntry(entry: CreateEntry) {
         // Link entry
         await tx.linkContent.create({
           data: {
-            url: entry.link.url,
-            subtype: entry.link.subtype,
+            url: entry.url,
+            subtype: entry.subtype,
             entryId: newEntry.id,
           },
         });
@@ -90,10 +90,7 @@ export async function createEntry(entry: CreateEntry) {
 
       return tx.entry.findUnique({
         where: { id: newEntry.id },
-        include: {
-          imageContent: true,
-          linkContent: true,
-        },
+        include: { imageContent: true, linkContent: true },
       });
     });
     return result;

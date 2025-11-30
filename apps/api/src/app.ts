@@ -17,6 +17,7 @@ import { logger } from './clients/logger';
 import { cookieConfig } from './config/cookie';
 import { env } from './config/env';
 import authRoutes from './routes/auth';
+import entriesRoutes from './routes/entries';
 import { JWTPayload } from './types/fastify';
 
 export function buildApp(opts: FastifyServerOptions = {}) {
@@ -33,7 +34,10 @@ export function buildApp(opts: FastifyServerOptions = {}) {
     credentials: true,
   });
 
-  app.register(multipart, { attachFieldsToBody: 'keyValues' });
+  app.register(multipart, {
+    attachFieldsToBody: 'keyValues',
+    limits: { fileSize: 1024 * 1024 * 10 }, // 10MB
+  });
 
   app.register(cookie, {
     secret: env.COOKIE_SECRET,
@@ -53,6 +57,7 @@ export function buildApp(opts: FastifyServerOptions = {}) {
       try {
         await request.jwtVerify();
       } catch (err) {
+        logger.error({ err }, 'Error verifying JWT');
         reply.code(401).send({ error: 'Unauthorized' });
         return;
       }
@@ -64,6 +69,7 @@ export function buildApp(opts: FastifyServerOptions = {}) {
     async (request: FastifyRequest, reply: FastifyReply) => {
       const user = request.user as JWTPayload;
       if (user.role !== 'admin') {
+        logger.error({ userId: user.sub }, 'User is not authorized');
         reply.code(403).send({ error: 'Forbidden' });
         return;
       }
@@ -75,6 +81,7 @@ export function buildApp(opts: FastifyServerOptions = {}) {
   });
 
   app.register(authRoutes, { prefix: '/auth' });
+  app.register(entriesRoutes, { prefix: '/entries' });
 
   return app;
 }

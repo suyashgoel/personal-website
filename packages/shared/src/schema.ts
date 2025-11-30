@@ -6,8 +6,6 @@ export const entryTypeSchema = z.enum(['text', 'image', 'link']);
 export const imageContentSchema = z.object({
   id: z.number().int().positive(),
   url: z.string().url(),
-  title: z.string().min(1),
-  caption: z.string().min(1),
   width: z.number().int().positive(),
   height: z.number().int().positive(),
   entryId: z.number().int().positive(),
@@ -19,7 +17,7 @@ export const linkContentSchema = z.object({
   resolvedTitle: z.string().optional().nullable(),
   resolvedDesc: z.string().optional().nullable(),
   resolvedImage: z.string().url().optional().nullable(),
-  subtype: z.string().default(''),
+  subtype: z.string().optional().nullable(),
   entryId: z.number().int().positive(),
 });
 
@@ -31,10 +29,6 @@ export const entryResponseSchema = z.object({
   body: z.string().min(1),
   slug: z.string().min(1),
   type: entryTypeSchema,
-  embedding: z
-    .object({ values: z.array(z.number()).length(1536) })
-    .optional()
-    .nullable(),
   imageContent: imageContentSchema.optional().nullable(),
   linkContent: linkContentSchema.optional().nullable(),
 });
@@ -69,11 +63,6 @@ const createBaseEntrySchema = z.object({
   body: z.string().min(1),
 });
 
-const createLinkEntrySchema = z.object({
-  url: z.string().url(),
-  subtype: z.string().optional(),
-});
-
 export const createEntrySchema = z.discriminatedUnion('type', [
   createBaseEntrySchema.extend({ type: z.literal(ENTRY_TYPES[0]) }),
   createBaseEntrySchema.extend({
@@ -82,7 +71,7 @@ export const createEntrySchema = z.discriminatedUnion('type', [
   }),
   createBaseEntrySchema.extend({
     type: z.literal(ENTRY_TYPES[2]),
-    link: createLinkEntrySchema,
+    url: z.string().url(),
     subtype: z.string().optional(),
   }),
 ]);

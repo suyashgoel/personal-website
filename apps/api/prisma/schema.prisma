@@ -16,7 +16,7 @@ model Entry {
   title        String
   slug         String                 @unique
   type         EntryType
-  embedding    Unsupported("vector")?
+  embedding Unsupported("vector(3072)")?
   body         String
   imageContent ImageContent?
   linkContent  LinkContent?
