@@ -39,7 +39,7 @@ export default async function authRoutes(fastify: FastifyInstance) {
       } catch (err) {
         if (err instanceof UserAlreadyExistsError) {
           request.log.warn(err);
-          return reply.code(409).send({ error: err.message });
+          return reply.code(err.statusCode).send({ error: err.message });
         }
         request.log.error(err);
         return reply.code(500).send({ error: 'Internal server error' });
@@ -70,7 +70,7 @@ export default async function authRoutes(fastify: FastifyInstance) {
       } catch (err) {
         if (err instanceof InvalidCredentialsError) {
           request.log.warn({ err, ip: request.ip });
-          return reply.code(401).send({ error: err.message });
+          return reply.code(err.statusCode).send({ error: err.message });
         }
         request.log.error(err);
         return reply.code(500).send({ error: 'Internal server error' });
@@ -111,7 +111,7 @@ export default async function authRoutes(fastify: FastifyInstance) {
       } catch (err) {
         if (err instanceof UserNotFoundError) {
           request.log.warn(err);
-          return reply.code(404).send({ error: err.message });
+          return reply.code(err.statusCode).send({ error: err.message });
         }
         request.log.error(err);
         return reply.code(500).send({ error: 'Internal server error' });

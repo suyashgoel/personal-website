@@ -32,7 +32,7 @@ export default async function entriesRoutes(fastify: FastifyInstance) {
       } catch (err) {
         if (err instanceof EntryAlreadyExistsError) {
           request.log.warn(err);
-          return reply.status(409).send({ error: err.message });
+          return reply.status(err.statusCode).send({ error: err.message });
         }
         if (
           err instanceof OpenAIError ||
@@ -40,7 +40,7 @@ export default async function entriesRoutes(fastify: FastifyInstance) {
           err instanceof ImageMetadataError
         ) {
           request.log.error(err);
-          return reply.status(500).send({ error: err.message });
+          return reply.status(err.statusCode).send({ error: err.message });
         }
         request.log.error(err);
         return reply.status(500).send({ error: 'Internal server error' });

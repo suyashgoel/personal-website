@@ -1,4 +1,5 @@
 export class UserAlreadyExistsError extends Error {
+  statusCode = 409;
   constructor() {
     super(`User already exists`);
     this.name = 'UserAlreadyExistsError';
@@ -6,6 +7,7 @@ export class UserAlreadyExistsError extends Error {
 }
 
 export class InvalidCredentialsError extends Error {
+  statusCode = 401;
   constructor() {
     super('Invalid email or password');
     this.name = 'InvalidCredentialsError';
@@ -13,6 +15,7 @@ export class InvalidCredentialsError extends Error {
 }
 
 export class UserNotFoundError extends Error {
+  statusCode = 404;
   constructor() {
     super(`User not found`);
     this.name = 'UserNotFoundError';
@@ -20,6 +23,7 @@ export class UserNotFoundError extends Error {
 }
 
 export class OpenAIError extends Error {
+  statusCode = 500;
   constructor(cause?: unknown) {
     super('OpenAI request failed');
     this.name = 'OpenAIError';
@@ -30,6 +34,7 @@ export class OpenAIError extends Error {
 }
 
 export class S3Error extends Error {
+  statusCode = 500;
   constructor(cause?: unknown) {
     super('S3 request failed');
     this.name = 'S3Error';
@@ -40,6 +45,7 @@ export class S3Error extends Error {
 }
 
 export class EntryAlreadyExistsError extends Error {
+  statusCode = 409;
   constructor() {
     super('Entry with this slug already exists');
     this.name = 'EntryAlreadyExistsError';
@@ -47,6 +53,7 @@ export class EntryAlreadyExistsError extends Error {
 }
 
 export class ImageMetadataError extends Error {
+  statusCode = 500;
   constructor() {
     super('Failed to get image metadata');
     this.name = 'ImageMetadataError';
