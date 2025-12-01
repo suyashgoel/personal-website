@@ -78,9 +78,11 @@ export const createEntrySchema = z.discriminatedUnion('type', [
   }),
 ]);
 
-export const getEntryParamsSchema = z.object({
+export const entryParamsSchema = z.object({
   slug: z.string(),
 });
+
+export const nullResponseSchema = z.null();
 
 export type EntryResponse = z.infer<typeof entryResponseSchema>;
 export type ImageContent = z.infer<typeof imageContentSchema>;
@@ -91,4 +93,5 @@ export type RegisterRequest = z.infer<typeof registerRequestSchema>;
 export type UserResponse = z.infer<typeof userResponseSchema>;
 export type Role = z.infer<typeof roleSchema>;
 export type CreateEntry = z.infer<typeof createEntrySchema>;
-export type GetEntryParams = z.infer<typeof getEntryParamsSchema>;
+export type EntryParams = z.infer<typeof entryParamsSchema>;
+export type NullResponse = z.infer<typeof nullResponseSchema>;

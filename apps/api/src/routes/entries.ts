@@ -2,9 +2,10 @@ import {
   CreateEntry,
   createEntrySchema,
   entriesResponseSchema,
+  EntryParams,
+  entryParamsSchema,
   entryResponseSchema,
-  GetEntryParams,
-  getEntryParamsSchema,
+  nullResponseSchema,
 } from '@personal-website/shared';
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import {
@@ -14,7 +15,12 @@ import {
   OpenAIError,
   S3Error,
 } from '../errors';
-import { createEntry, getEntries, getEntry } from '../services/entries';
+import {
+  createEntry,
+  deleteEntry,
+  getEntries,
+  getEntry,
+} from '../services/entries';
 
 export default async function entriesRoutes(fastify: FastifyInstance) {
   fastify.post(
@@ -77,7 +83,7 @@ export default async function entriesRoutes(fastify: FastifyInstance) {
     '/:slug',
     {
       schema: {
-        params: getEntryParamsSchema,
+        params: entryParamsSchema,
         response: {
           200: entryResponseSchema,
         },
@@ -85,13 +91,43 @@ export default async function entriesRoutes(fastify: FastifyInstance) {
     },
     async (request: FastifyRequest, reply: FastifyReply) => {
       try {
-        const { slug } = request.params as GetEntryParams;
+        const { slug } = request.params as EntryParams;
         const entry = await getEntry(slug);
         request.log.info({ slug, entryId: entry.id }, 'Entry fetched');
         return reply.code(200).send(entry);
       } catch (err) {
         if (err instanceof EntryNotFoundError) {
           request.log.warn(err);
+          return reply.status(err.statusCode).send({ error: err.message });
+        }
+        request.log.error(err);
+        return reply.status(500).send({ error: 'Internal server error' });
+      }
+    }
+  );
+
+  fastify.delete(
+    '/:slug',
+    {
+      preHandler: [fastify.authenticate, fastify.authorize],
+      schema: {
+        params: entryParamsSchema,
+        response: { 204: nullResponseSchema },
+      },
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      try {
+        const { slug } = request.params as EntryParams;
+        await deleteEntry(slug);
+        request.log.info({ slug }, 'Entry deleted');
+        return reply.code(204).send();
+      } catch (err) {
+        if (err instanceof EntryNotFoundError) {
+          request.log.warn(err);
+          return reply.status(err.statusCode).send({ error: err.message });
+        }
+        if (err instanceof S3Error) {
+          request.log.error(err);
           return reply.status(err.statusCode).send({ error: err.message });
         }
         request.log.error(err);

@@ -35,3 +35,7 @@ export async function deleteFile(key: string) {
 export function getPublicUrl(key: string) {
   return `https://${env.S3_BUCKET_NAME}.s3.${env.AWS_REGION}.amazonaws.com/${key}`;
 }
+
+export function getKeyFromUrl(url: string) {
+  return url.split('/').pop()!;
+}

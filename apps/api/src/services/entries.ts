@@ -9,7 +9,12 @@ import {
 import { ImageMetadata } from '../types/image';
 import { UploadParams } from '../types/upload';
 import { generateEmbedding } from '../utils/openai';
-import { deleteFile, getPublicUrl, uploadFile } from '../utils/s3';
+import {
+  deleteFile,
+  getKeyFromUrl,
+  getPublicUrl,
+  uploadFile,
+} from '../utils/s3';
 import { slugify } from '../utils/slug';
 
 const CONTENT_MAX_LENGTH = 10000;
@@ -128,4 +133,23 @@ export async function getEntry(slug: string): Promise<EntryResponse> {
     throw new EntryNotFoundError();
   }
   return entry;
+}
+
+export async function deleteEntry(slug: string): Promise<void> {
+  const entry = await db.entry.findUnique({
+    where: { slug },
+    include: { imageContent: true },
+  });
+  if (!entry) {
+    throw new EntryNotFoundError();
+  }
+
+  if (entry.imageContent) {
+    const key = getKeyFromUrl(entry.imageContent.url);
+    await deleteFile(key);
+  }
+
+  await db.entry.delete({
+    where: { slug },
+  });
 }
