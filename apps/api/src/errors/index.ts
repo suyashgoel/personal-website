@@ -67,3 +67,11 @@ export class ImageMetadataError extends Error {
     this.name = 'ImageMetadataError';
   }
 }
+
+export class InvalidUpdateError extends Error {
+  statusCode = 400;
+  constructor(message: string) {
+    super(message);
+    this.name = 'InvalidUpdateError';
+  }
+}

@@ -14,10 +14,10 @@ export const imageContentSchema = z.object({
 export const linkContentSchema = z.object({
   id: z.number().int().positive(),
   url: z.string().url(),
-  resolvedTitle: z.string().optional().nullable(),
-  resolvedDesc: z.string().optional().nullable(),
-  resolvedImage: z.string().url().optional().nullable(),
-  subtype: z.string().optional().nullable(),
+  resolvedTitle: z.string().nullable(),
+  resolvedDesc: z.string().nullable(),
+  resolvedImage: z.string().url().nullable(),
+  subtype: z.string().nullable(),
   entryId: z.number().int().positive(),
 });
 
@@ -29,22 +29,13 @@ export const entryResponseSchema = z.object({
   body: z.string().min(1),
   slug: z.string().min(1),
   type: entryTypeSchema,
-  imageContent: imageContentSchema.optional().nullable(),
-  linkContent: linkContentSchema.optional().nullable(),
+  imageContent: imageContentSchema.nullable(),
+  linkContent: linkContentSchema.nullable(),
 });
 
 export const entriesResponseSchema = z.array(entryResponseSchema);
 
 export const roleSchema = z.enum(['admin', 'user']);
-
-export const userSchema = z.object({
-  id: z.number().int().positive(),
-  email: z.string().email(),
-  role: roleSchema,
-  name: z.string().min(1),
-  hashedPassword: z.string().min(1),
-  createdAt: z.coerce.date(),
-});
 
 export const loginRequestSchema = z.object({
   email: z.string().email(),
@@ -55,9 +46,11 @@ export const registerRequestSchema = loginRequestSchema.extend({
   name: z.string().min(1),
 });
 
-export const userResponseSchema = userSchema.omit({
-  hashedPassword: true,
-  createdAt: true,
+export const userResponseSchema = z.object({
+  id: z.number().int().positive(),
+  email: z.string().email(),
+  role: roleSchema,
+  name: z.string().min(1),
 });
 
 const createBaseEntrySchema = z.object({
@@ -74,9 +67,17 @@ export const createEntrySchema = z.discriminatedUnion('type', [
   createBaseEntrySchema.extend({
     type: z.literal('link'),
     url: z.string().url(),
-    subtype: z.string().optional(),
   }),
 ]);
+
+export const updateEntrySchema = z
+  .object({
+    title: z.string().min(1).optional(),
+    body: z.string().min(1).optional(),
+    image: z.instanceof(Buffer).optional(),
+    url: z.string().url().optional(),
+  })
+  .refine(data => data.title || data.body || data.image || data.url);
 
 export const entryParamsSchema = z.object({
   slug: z.string(),
@@ -87,11 +88,11 @@ export const nullResponseSchema = z.null();
 export type EntryResponse = z.infer<typeof entryResponseSchema>;
 export type ImageContent = z.infer<typeof imageContentSchema>;
 export type LinkContent = z.infer<typeof linkContentSchema>;
-export type User = z.infer<typeof userSchema>;
 export type LoginRequest = z.infer<typeof loginRequestSchema>;
 export type RegisterRequest = z.infer<typeof registerRequestSchema>;
 export type UserResponse = z.infer<typeof userResponseSchema>;
 export type Role = z.infer<typeof roleSchema>;
 export type CreateEntry = z.infer<typeof createEntrySchema>;
+export type UpdateEntry = z.infer<typeof updateEntrySchema>;
 export type EntryParams = z.infer<typeof entryParamsSchema>;
 export type NullResponse = z.infer<typeof nullResponseSchema>;

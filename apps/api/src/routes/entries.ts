@@ -6,12 +6,15 @@ import {
   entryParamsSchema,
   entryResponseSchema,
   nullResponseSchema,
+  UpdateEntry,
+  updateEntrySchema,
 } from '@personal-website/shared';
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import {
   EntryAlreadyExistsError,
   EntryNotFoundError,
   ImageMetadataError,
+  InvalidUpdateError,
   OpenAIError,
   S3Error,
 } from '../errors';
@@ -20,6 +23,7 @@ import {
   deleteEntry,
   getEntries,
   getEntry,
+  updateEntry,
 } from '../services/entries';
 
 export default async function entriesRoutes(fastify: FastifyInstance) {
@@ -127,6 +131,46 @@ export default async function entriesRoutes(fastify: FastifyInstance) {
           return reply.status(err.statusCode).send({ error: err.message });
         }
         if (err instanceof S3Error) {
+          request.log.error(err);
+          return reply.status(err.statusCode).send({ error: err.message });
+        }
+        request.log.error(err);
+        return reply.status(500).send({ error: 'Internal server error' });
+      }
+    }
+  );
+
+  fastify.put(
+    '/:slug',
+    {
+      preHandler: [fastify.authenticate, fastify.authorize],
+      schema: {
+        params: entryParamsSchema,
+        body: updateEntrySchema,
+        response: {
+          200: entryResponseSchema,
+        },
+      },
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      try {
+        const { slug } = request.params as EntryParams;
+        const entry = await updateEntry(slug, request.body as UpdateEntry);
+        request.log.info({ slug }, 'Entry updated');
+        return reply.code(200).send(entry);
+      } catch (err) {
+        if (
+          err instanceof EntryNotFoundError ||
+          err instanceof InvalidUpdateError
+        ) {
+          request.log.warn(err);
+          return reply.status(err.statusCode).send({ error: err.message });
+        }
+        if (
+          err instanceof OpenAIError ||
+          err instanceof S3Error ||
+          err instanceof ImageMetadataError
+        ) {
           request.log.error(err);
           return reply.status(err.statusCode).send({ error: err.message });
         }

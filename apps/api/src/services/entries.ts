@@ -1,10 +1,15 @@
-import { CreateEntry, EntryResponse } from '@personal-website/shared';
+import {
+  CreateEntry,
+  EntryResponse,
+  UpdateEntry,
+} from '@personal-website/shared';
 import sharp from 'sharp';
 import { db } from '../clients/db';
 import {
   EntryAlreadyExistsError,
   EntryNotFoundError,
   ImageMetadataError,
+  InvalidUpdateError,
 } from '../errors';
 import { ImageMetadata } from '../types/image';
 import { UploadParams } from '../types/upload';
@@ -94,7 +99,6 @@ export async function createEntry(entry: CreateEntry): Promise<EntryResponse> {
         await tx.linkContent.create({
           data: {
             url: entry.url,
-            subtype: entry.subtype,
             entryId: newEntry.id,
           },
         });
@@ -108,7 +112,11 @@ export async function createEntry(entry: CreateEntry): Promise<EntryResponse> {
     return result!;
   } catch (err) {
     if (imageMetadata) {
-      await deleteFile(imageMetadata.key);
+      try {
+        await deleteFile(imageMetadata.key);
+      } catch {
+        // Ignore error
+      }
     }
     throw err;
   }
@@ -152,4 +160,122 @@ export async function deleteEntry(slug: string): Promise<void> {
   await db.entry.delete({
     where: { slug },
   });
+}
+
+export async function updateEntry(
+  slug: string,
+  updatedData: UpdateEntry
+): Promise<EntryResponse> {
+  const existingEntry = await getEntry(slug);
+
+  if (updatedData.image && existingEntry.type !== ENTRY_TYPE_IMAGE) {
+    throw new InvalidUpdateError(
+      'Cannot update image field on non-image entry'
+    );
+  }
+  if (updatedData.url && existingEntry.type !== ENTRY_TYPE_LINK) {
+    throw new InvalidUpdateError('Cannot update url field on non-link entry');
+  }
+
+  const finalTitle = updatedData.title ?? existingEntry.title;
+  const finalBody = updatedData.body ?? existingEntry.body;
+
+  let newEmbedding: number[] | null = null;
+  if (updatedData.title || updatedData.body) {
+    const content = `${finalTitle}\n${finalBody}`
+      .trim()
+      .slice(0, CONTENT_MAX_LENGTH);
+    newEmbedding = await generateEmbedding(content);
+  }
+
+  let newImageMetadata: ImageMetadata | null = null;
+  let oldImageKey: string | null = null;
+
+  if (updatedData.image && existingEntry.type === ENTRY_TYPE_IMAGE) {
+    oldImageKey = getKeyFromUrl(existingEntry.imageContent!.url);
+
+    const metadata = await sharp(updatedData.image).metadata();
+    if (!metadata.format || !metadata.width || !metadata.height) {
+      throw new ImageMetadataError();
+    }
+    const extension = metadata.format === 'jpg' ? 'jpeg' : metadata.format;
+    const newKey = `${slug}.${extension}`;
+
+    await uploadFile({
+      key: newKey,
+      body: updatedData.image,
+      contentType: `image/${extension}`,
+    });
+
+    newImageMetadata = {
+      width: metadata.width,
+      height: metadata.height,
+      key: newKey,
+    };
+  }
+
+  try {
+    const result = await db.$transaction(async tx => {
+      await tx.entry.update({
+        where: { slug },
+        data: {
+          title: finalTitle,
+          body: finalBody,
+          updatedAt: new Date(),
+        },
+      });
+
+      if (newEmbedding) {
+        await tx.$executeRaw`
+          UPDATE entries 
+          SET embedding = ${JSON.stringify(newEmbedding)}::vector 
+          WHERE id = ${existingEntry.id}
+        `;
+      }
+
+      if (newImageMetadata) {
+        await tx.imageContent.update({
+          where: { entryId: existingEntry.id },
+          data: {
+            url: getPublicUrl(newImageMetadata.key),
+            width: newImageMetadata.width,
+            height: newImageMetadata.height,
+          },
+        });
+      }
+
+      if (updatedData.url && existingEntry.type === ENTRY_TYPE_LINK) {
+        await tx.linkContent.update({
+          where: { entryId: existingEntry.id },
+          data: {
+            url: updatedData.url,
+          },
+        });
+      }
+
+      return tx.entry.findUnique({
+        where: { id: existingEntry.id },
+        include: { imageContent: true, linkContent: true },
+      })!;
+    });
+
+    if (oldImageKey) {
+      try {
+        await deleteFile(oldImageKey);
+      } catch {
+        // Ignore error
+      }
+    }
+
+    return result!;
+  } catch (err) {
+    if (newImageMetadata) {
+      try {
+        await deleteFile(newImageMetadata.key);
+      } catch {
+        // Ignore error
+      }
+    }
+    throw err;
+  }
 }
