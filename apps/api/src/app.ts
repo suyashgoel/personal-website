@@ -31,7 +31,7 @@ export function buildApp(opts: FastifyServerOptions = {}) {
   app.setSerializerCompiler(serializerCompiler);
 
   app.register(cors, {
-    origin: env.NODE_ENV === 'production' ? false : true,
+    origin: env.FRONTEND_URL,
     credentials: true,
   });
 
@@ -78,7 +78,7 @@ export function buildApp(opts: FastifyServerOptions = {}) {
   );
 
   app.get('/health', async () => {
-    return { status: 'ok', brain: 'active' };
+    return { status: 'ok' };
   });
 
   app.register(authRoutes, { prefix: '/auth' });

@@ -1,7 +1,12 @@
 import { z } from 'zod';
 
+// Constants & Enums
+
 export const ENTRY_TYPES = ['text', 'image', 'link'] as const;
 export const entryTypeSchema = z.enum(['text', 'image', 'link']);
+export const roleSchema = z.enum(['admin', 'user']);
+
+// Entry Content Schemas
 
 export const imageContentSchema = z.object({
   id: z.number().int().positive(),
@@ -21,6 +26,8 @@ export const linkContentSchema = z.object({
   entryId: z.number().int().positive(),
 });
 
+// Entry Schemas
+
 export const entryResponseSchema = z.object({
   id: z.number().int().positive(),
   createdAt: z.coerce.date(),
@@ -34,24 +41,6 @@ export const entryResponseSchema = z.object({
 });
 
 export const entriesResponseSchema = z.array(entryResponseSchema);
-
-export const roleSchema = z.enum(['admin', 'user']);
-
-export const loginRequestSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(1),
-});
-
-export const registerRequestSchema = loginRequestSchema.extend({
-  name: z.string().min(1),
-});
-
-export const userResponseSchema = z.object({
-  id: z.number().int().positive(),
-  email: z.string().email(),
-  role: roleSchema,
-  name: z.string().min(1),
-});
 
 const createBaseEntrySchema = z.object({
   title: z.string().min(1),
@@ -83,7 +72,25 @@ export const entryParamsSchema = z.object({
   slug: z.string(),
 });
 
-export const nullResponseSchema = z.null();
+// Auth & User Schemas
+
+export const loginRequestSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(1),
+});
+
+export const registerRequestSchema = loginRequestSchema.extend({
+  name: z.string().min(1),
+});
+
+export const userResponseSchema = z.object({
+  id: z.number().int().positive(),
+  email: z.string().email(),
+  role: roleSchema,
+  name: z.string().min(1),
+});
+
+// Recommendation Schemas
 
 export const recommendationItemSchema = z.object({
   slug: z.string(),
@@ -102,6 +109,12 @@ export const recommendationsResponseSchema = z.array(recommendationItemSchema);
 export const topMatchParamsSchema = z.object({
   query: z.string().min(1),
 });
+
+// Common Schemas
+
+export const nullResponseSchema = z.null();
+
+// Type Exports
 
 export type EntryResponse = z.infer<typeof entryResponseSchema>;
 export type ImageContent = z.infer<typeof imageContentSchema>;
