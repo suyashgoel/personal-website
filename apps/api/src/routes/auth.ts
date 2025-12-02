@@ -7,11 +7,7 @@ import {
 } from '@personal-website/shared';
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { clearCookieConfig, cookieConfig } from '../config/cookie';
-import {
-  InvalidCredentialsError,
-  UserAlreadyExistsError,
-  UserNotFoundError,
-} from '../errors';
+import { UserError } from '../errors';
 import { getCurrentUser, login, register } from '../services/auth';
 import { JWTPayload } from '../types/fastify';
 
@@ -37,7 +33,7 @@ export default async function authRoutes(fastify: FastifyInstance) {
         request.log.info({ userId: user.id }, 'User registered');
         return reply.code(201).send(user);
       } catch (err) {
-        if (err instanceof UserAlreadyExistsError) {
+        if (err instanceof UserError) {
           request.log.warn(err);
           return reply.code(err.statusCode).send({ error: err.message });
         }
@@ -68,7 +64,7 @@ export default async function authRoutes(fastify: FastifyInstance) {
         request.log.info({ userId: user.id }, 'User logged in');
         return reply.code(200).send(user);
       } catch (err) {
-        if (err instanceof InvalidCredentialsError) {
+        if (err instanceof UserError) {
           request.log.warn({ err, ip: request.ip });
           return reply.code(err.statusCode).send({ error: err.message });
         }
@@ -109,7 +105,7 @@ export default async function authRoutes(fastify: FastifyInstance) {
         request.log.info({ userId: currentUser.id }, 'User fetched');
         return reply.send(currentUser);
       } catch (err) {
-        if (err instanceof UserNotFoundError) {
+        if (err instanceof UserError) {
           request.log.warn(err);
           return reply.code(err.statusCode).send({ error: err.message });
         }

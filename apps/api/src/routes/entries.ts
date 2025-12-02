@@ -10,14 +10,7 @@ import {
   updateEntrySchema,
 } from '@personal-website/shared';
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
-import {
-  EntryAlreadyExistsError,
-  EntryNotFoundError,
-  ImageMetadataError,
-  InvalidUpdateError,
-  OpenAIError,
-  S3Error,
-} from '../errors';
+import { ServiceError, UserError } from '../errors';
 import {
   createEntry,
   deleteEntry,
@@ -44,15 +37,11 @@ export default async function entriesRoutes(fastify: FastifyInstance) {
         request.log.info({ entryId: entry.id }, 'Entry created');
         return reply.status(201).send(entry);
       } catch (err) {
-        if (err instanceof EntryAlreadyExistsError) {
+        if (err instanceof UserError) {
           request.log.warn(err);
           return reply.status(err.statusCode).send({ error: err.message });
         }
-        if (
-          err instanceof OpenAIError ||
-          err instanceof S3Error ||
-          err instanceof ImageMetadataError
-        ) {
+        if (err instanceof ServiceError) {
           request.log.error(err);
           return reply.status(err.statusCode).send({ error: err.message });
         }
@@ -100,7 +89,7 @@ export default async function entriesRoutes(fastify: FastifyInstance) {
         request.log.info({ slug, entryId: entry.id }, 'Entry fetched');
         return reply.code(200).send(entry);
       } catch (err) {
-        if (err instanceof EntryNotFoundError) {
+        if (err instanceof UserError) {
           request.log.warn(err);
           return reply.status(err.statusCode).send({ error: err.message });
         }
@@ -126,11 +115,11 @@ export default async function entriesRoutes(fastify: FastifyInstance) {
         request.log.info({ slug }, 'Entry deleted');
         return reply.code(204).send();
       } catch (err) {
-        if (err instanceof EntryNotFoundError) {
+        if (err instanceof UserError) {
           request.log.warn(err);
           return reply.status(err.statusCode).send({ error: err.message });
         }
-        if (err instanceof S3Error) {
+        if (err instanceof ServiceError) {
           request.log.error(err);
           return reply.status(err.statusCode).send({ error: err.message });
         }
@@ -159,18 +148,11 @@ export default async function entriesRoutes(fastify: FastifyInstance) {
         request.log.info({ slug }, 'Entry updated');
         return reply.code(200).send(entry);
       } catch (err) {
-        if (
-          err instanceof EntryNotFoundError ||
-          err instanceof InvalidUpdateError
-        ) {
+        if (err instanceof UserError) {
           request.log.warn(err);
           return reply.status(err.statusCode).send({ error: err.message });
         }
-        if (
-          err instanceof OpenAIError ||
-          err instanceof S3Error ||
-          err instanceof ImageMetadataError
-        ) {
+        if (err instanceof ServiceError) {
           request.log.error(err);
           return reply.status(err.statusCode).send({ error: err.message });
         }

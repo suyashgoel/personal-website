@@ -18,6 +18,7 @@ import { cookieConfig } from './config/cookie';
 import { env } from './config/env';
 import authRoutes from './routes/auth';
 import entriesRoutes from './routes/entries';
+import recommendationsRoutes from './routes/recommendations';
 import { JWTPayload } from './types/fastify';
 
 export function buildApp(opts: FastifyServerOptions = {}) {
@@ -82,6 +83,7 @@ export function buildApp(opts: FastifyServerOptions = {}) {
 
   app.register(authRoutes, { prefix: '/auth' });
   app.register(entriesRoutes, { prefix: '/entries' });
+  app.register(recommendationsRoutes, { prefix: '/recommendations' });
 
   return app;
 }

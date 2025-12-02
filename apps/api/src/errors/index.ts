@@ -1,77 +1,89 @@
-export class UserAlreadyExistsError extends Error {
+export abstract class UserError extends Error {
+  abstract statusCode: number;
+
+  constructor(message: string) {
+    super(message);
+    this.name = this.constructor.name;
+  }
+}
+
+export abstract class ServiceError extends Error {
+  abstract statusCode: number;
+
+  constructor(
+    message: string,
+    public cause?: unknown
+  ) {
+    super(message);
+    this.name = this.constructor.name;
+  }
+}
+
+export class UserAlreadyExistsError extends UserError {
   statusCode = 409;
   constructor() {
     super('User already exists');
-    this.name = 'UserAlreadyExistsError';
   }
 }
 
-export class InvalidCredentialsError extends Error {
+export class InvalidCredentialsError extends UserError {
   statusCode = 401;
   constructor() {
     super('Invalid email or password');
-    this.name = 'InvalidCredentialsError';
   }
 }
 
-export class UserNotFoundError extends Error {
+export class UserNotFoundError extends UserError {
   statusCode = 404;
   constructor() {
     super('User not found');
-    this.name = 'UserNotFoundError';
   }
 }
 
-export class EntryNotFoundError extends Error {
+export class EntryNotFoundError extends UserError {
   statusCode = 404;
   constructor() {
     super('Entry not found');
-    this.name = 'EntryNotFoundError';
   }
 }
 
-export class OpenAIError extends Error {
-  statusCode = 500;
-  constructor(cause?: unknown) {
-    super('OpenAI request failed');
-    this.name = 'OpenAIError';
-    if (cause) {
-      this.cause = cause;
-    }
-  }
-}
-
-export class S3Error extends Error {
-  statusCode = 500;
-  constructor(cause?: unknown) {
-    super('S3 request failed');
-    this.name = 'S3Error';
-    if (cause) {
-      this.cause = cause;
-    }
-  }
-}
-
-export class EntryAlreadyExistsError extends Error {
+export class EntryAlreadyExistsError extends UserError {
   statusCode = 409;
   constructor() {
     super('Entry with this slug already exists');
-    this.name = 'EntryAlreadyExistsError';
   }
 }
 
-export class ImageMetadataError extends Error {
-  statusCode = 500;
-  constructor() {
-    super('Failed to get image metadata');
-    this.name = 'ImageMetadataError';
-  }
-}
-
-export class InvalidUpdateError extends Error {
+export class InvalidUpdateError extends UserError {
   statusCode = 400;
   constructor(message: string) {
     super(message);
-    this.name = 'InvalidUpdateError';
+  }
+}
+
+export class OpenAIError extends ServiceError {
+  statusCode = 500;
+  constructor(cause?: unknown) {
+    super('OpenAI request failed');
+    if (cause) {
+      this.cause = cause;
+    }
+  }
+}
+
+export class S3Error extends ServiceError {
+  statusCode = 500;
+  constructor(cause?: unknown) {
+    super('S3 request failed');
+    if (cause) {
+      this.cause = cause;
+    }
+  }
+}
+
+export class ImageMetadataError extends ServiceError {
+  statusCode = 500;
+  constructor() {
+    super('Failed to get image metadata');
   }
 }

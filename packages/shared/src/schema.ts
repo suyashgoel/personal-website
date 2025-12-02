@@ -85,6 +85,24 @@ export const entryParamsSchema = z.object({
 
 export const nullResponseSchema = z.null();
 
+export const recommendationItemSchema = z.object({
+  slug: z.string(),
+  title: z.string(),
+});
+
+export const recommendationsParamsSchema = z
+  .object({
+    query: z.string().min(1).optional(),
+    slug: z.string().min(1).optional(),
+  })
+  .refine(data => Boolean(data.query) !== Boolean(data.slug));
+
+export const recommendationsResponseSchema = z.array(recommendationItemSchema);
+
+export const topMatchParamsSchema = z.object({
+  query: z.string().min(1),
+});
+
 export type EntryResponse = z.infer<typeof entryResponseSchema>;
 export type ImageContent = z.infer<typeof imageContentSchema>;
 export type LinkContent = z.infer<typeof linkContentSchema>;
@@ -96,3 +114,9 @@ export type CreateEntry = z.infer<typeof createEntrySchema>;
 export type UpdateEntry = z.infer<typeof updateEntrySchema>;
 export type EntryParams = z.infer<typeof entryParamsSchema>;
 export type NullResponse = z.infer<typeof nullResponseSchema>;
+export type RecommendationItem = z.infer<typeof recommendationItemSchema>;
+export type RecommendationsParams = z.infer<typeof recommendationsParamsSchema>;
+export type RecommendationsResponse = z.infer<
+  typeof recommendationsResponseSchema
+>;
+export type TopMatchParams = z.infer<typeof topMatchParamsSchema>;
