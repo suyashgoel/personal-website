@@ -16,6 +16,7 @@ import {
 import { logger } from './clients/logger';
 import { cookieConfig } from './config/cookie';
 import { env } from './config/env';
+import aboutRoutes from './routes/about';
 import authRoutes from './routes/auth';
 import entriesRoutes from './routes/entries';
 import recommendationsRoutes from './routes/recommendations';
@@ -84,6 +85,7 @@ export function buildApp(opts: FastifyServerOptions = {}) {
   app.register(authRoutes, { prefix: '/auth' });
   app.register(entriesRoutes, { prefix: '/entries' });
   app.register(recommendationsRoutes, { prefix: '/recommendations' });
+  app.register(aboutRoutes, { prefix: '/about' });
 
   return app;
 }

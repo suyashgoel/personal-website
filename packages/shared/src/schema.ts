@@ -143,7 +143,7 @@ export const aboutContentSchema = z.object({
     closing: z.string(),
     email: z.string().email(),
     linkedin: z.string().url(),
-    x: z.string(),
+    x: z.string().url(),
   }),
 });
 
