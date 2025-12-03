@@ -30,18 +30,12 @@ export default async function recommendationsRoutes(fastify: FastifyInstance) {
       try {
         if (query) {
           const recommendations = await getRecommendationsByQuery(query);
-          request.log.info(
-            { query, recommendations },
-            'Recommendations fetched'
-          );
+          request.log.info({ query }, 'Recommendations fetched');
           return reply.code(200).send(recommendations);
         }
         if (slug) {
           const recommendations = await getRecommendationsBySlug(slug);
-          request.log.info(
-            { slug, recommendations },
-            'Recommendations fetched'
-          );
+          request.log.info({ slug }, 'Recommendations fetched');
           return reply.code(200).send(recommendations);
         }
       } catch (err) {
