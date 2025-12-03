@@ -48,7 +48,7 @@ async function seedAboutPage() {
               'I am a creative',
             ],
             revelation:
-              "Over the summer, I learned I was a Type 4, the introspective, creative type. At Digg's offsite during an enneagram session, some were shocked I identified that way as an engineer.\n\nThat's when it clicked: building is my creative outlet. Code isn't just logic and syntax to me: it's how I bring what I've always dreamt of to life. This is my art.",
+              "Over the summer, I learned I was a Type 4, the introspective, creative type. At Digg's onsite during an enneagram session, some were shocked I identified that way as an engineer.\n\nThat's when it clicked: building is my creative outlet. Code isn't just logic and syntax to me: it's how I bring what I've always dreamt of to life. This is my art.",
           },
           loves: ['music', 'travel', 'food', 'exploration', 'connection'],
           purpose: {
@@ -60,7 +60,7 @@ async function seedAboutPage() {
             closing:
               "Want to talk about startups, building, AI, solo travel, or that one song you can't stop listening to?",
             email: 'suyashgoel10@gmail.com',
-            linkedin: 'linkedin.com/in/suyash-goel',
+            linkedin: 'https://linkedin.com/in/suyash-goel',
             x: '@suyashgoe1',
           },
         },
