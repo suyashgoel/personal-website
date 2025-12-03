@@ -1,7 +1,7 @@
 import { EntryResponse, RecommendationItem } from '@personal-website/shared';
-import { db } from '../clients/db';
+import { db } from '../clients';
 import { EntryNotFoundError } from '../errors';
-import { generateEmbedding } from '../utils/openai';
+import { generateEmbedding } from '../utils';
 import { getEntry } from './entries';
 
 const NUM_RECOMMENDATIONS = 2;

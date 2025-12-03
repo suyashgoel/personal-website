@@ -6,10 +6,10 @@ import {
   userResponseSchema,
 } from '@personal-website/shared';
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
-import { clearCookieConfig, cookieConfig } from '../config/cookie';
+import { clearCookieConfig, cookieConfig } from '../config';
 import { UserError } from '../errors';
 import { getCurrentUser, login, register } from '../services/auth';
-import { JWTPayload } from '../types/fastify';
+import { JWTPayload } from '../types';
 
 export default async function authRoutes(fastify: FastifyInstance) {
   fastify.post(

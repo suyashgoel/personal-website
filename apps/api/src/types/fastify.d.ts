@@ -1,9 +1,4 @@
-import { Role } from '@personal-website/shared';
-
-export type JWTPayload = {
-  sub: number;
-  role: Role;
-};
+import { JWTPayload } from './index';
 
 declare module 'fastify' {
   interface FastifyInstance {

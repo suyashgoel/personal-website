@@ -4,23 +4,22 @@ import {
   UpdateEntry,
 } from '@personal-website/shared';
 import sharp from 'sharp';
-import { db } from '../clients/db';
+import { db } from '../clients';
 import {
   EntryAlreadyExistsError,
   EntryNotFoundError,
   ImageMetadataError,
   InvalidUpdateError,
 } from '../errors';
-import { ImageMetadata } from '../types/image';
-import { UploadParams } from '../types/upload';
-import { generateEmbedding } from '../utils/openai';
+import { ImageMetadata, UploadParams } from '../types';
 import {
   deleteFile,
+  generateEmbedding,
   getKeyFromUrl,
   getPublicUrl,
+  slugify,
   uploadFile,
-} from '../utils/s3';
-import { slugify } from '../utils/slug';
+} from '../utils';
 
 const CONTENT_MAX_LENGTH = 10000;
 

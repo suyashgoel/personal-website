@@ -1,7 +1,7 @@
-import { openai } from '../clients/openai';
+import { openai } from '../clients';
 import { OpenAIError } from '../errors';
 
-export const generateEmbedding = async (text: string) => {
+export async function generateEmbedding(text: string): Promise<number[]> {
   try {
     const response = await openai.embeddings.create({
       model: 'text-embedding-3-large',
@@ -11,4 +11,4 @@ export const generateEmbedding = async (text: string) => {
   } catch (err) {
     throw new OpenAIError(err);
   }
-};
+}

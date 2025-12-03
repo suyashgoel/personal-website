@@ -1,5 +1,5 @@
 import { AboutContent } from '@personal-website/shared';
-import { db } from '../clients/db';
+import { db } from '../clients';
 
 export async function getAboutContent(): Promise<AboutContent> {
   const about = await db.about.findUnique({

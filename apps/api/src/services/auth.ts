@@ -3,13 +3,13 @@ import {
   RegisterRequest,
   UserResponse,
 } from '@personal-website/shared';
-import { db } from '../clients/db';
+import { db } from '../clients';
 import {
   InvalidCredentialsError,
   UserAlreadyExistsError,
   UserNotFoundError,
 } from '../errors';
-import { hashPassword, verifyPassword } from '../utils/auth';
+import { hashPassword, verifyPassword } from '../utils';
 
 export async function register(user: RegisterRequest): Promise<UserResponse> {
   const existingUser = await db.user.findUnique({

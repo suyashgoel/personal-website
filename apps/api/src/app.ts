@@ -13,14 +13,13 @@ import {
   validatorCompiler,
   ZodTypeProvider,
 } from 'fastify-type-provider-zod';
-import { logger } from './clients/logger';
-import { cookieConfig } from './config/cookie';
-import { env } from './config/env';
+import { logger } from './clients';
+import { cookieConfig, env } from './config';
 import aboutRoutes from './routes/about';
 import authRoutes from './routes/auth';
 import entriesRoutes from './routes/entries';
 import recommendationsRoutes from './routes/recommendations';
-import { JWTPayload } from './types/fastify';
+import { JWTPayload } from './types';
 
 export function buildApp(opts: FastifyServerOptions = {}) {
   const app = Fastify({

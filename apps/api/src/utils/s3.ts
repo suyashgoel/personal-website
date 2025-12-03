@@ -1,17 +1,17 @@
 import { DeleteObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
-import { s3Client } from '../clients/s3';
-import { env } from '../config/env';
+import { s3Client } from '../clients';
+import { env } from '../config';
 import { S3Error } from '../errors';
-import { UploadParams } from '../types/upload';
+import { UploadParams } from '../types';
 
-export async function uploadFile({ key, body, contentType }: UploadParams) {
+export async function uploadFile(params: UploadParams): Promise<void> {
   try {
     await s3Client.send(
       new PutObjectCommand({
         Bucket: env.S3_BUCKET_NAME,
-        Key: key,
-        Body: body,
-        ContentType: contentType,
+        Key: params.key,
+        Body: params.body,
+        ContentType: params.contentType,
       })
     );
   } catch (err) {
@@ -19,7 +19,7 @@ export async function uploadFile({ key, body, contentType }: UploadParams) {
   }
 }
 
-export async function deleteFile(key: string) {
+export async function deleteFile(key: string): Promise<void> {
   try {
     await s3Client.send(
       new DeleteObjectCommand({
@@ -32,10 +32,10 @@ export async function deleteFile(key: string) {
   }
 }
 
-export function getPublicUrl(key: string) {
+export function getPublicUrl(key: string): string {
   return `https://${env.S3_BUCKET_NAME}.s3.${env.AWS_REGION}.amazonaws.com/${key}`;
 }
 
-export function getKeyFromUrl(url: string) {
+export function getKeyFromUrl(url: string): string {
   return url.split('/').pop()!;
 }
