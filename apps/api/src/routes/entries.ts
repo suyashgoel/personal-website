@@ -34,7 +34,7 @@ export default async function entriesRoutes(fastify: FastifyInstance) {
     async (request: FastifyRequest, reply: FastifyReply) => {
       try {
         const entry = await createEntry(request.body as CreateEntry);
-        request.log.info({ entryId: entry.id }, 'Entry created');
+        request.log.info({ slug: entry.slug }, 'Entry created');
         return reply.status(201).send(entry);
       } catch (err) {
         if (err instanceof UserError) {
@@ -86,7 +86,7 @@ export default async function entriesRoutes(fastify: FastifyInstance) {
       try {
         const { slug } = request.params as EntryParams;
         const entry = await getEntry(slug);
-        request.log.info({ slug, entryId: entry.id }, 'Entry fetched');
+        request.log.info({ slug }, 'Entry fetched');
         return reply.code(200).send(entry);
       } catch (err) {
         if (err instanceof UserError) {

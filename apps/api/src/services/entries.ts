@@ -221,7 +221,6 @@ export async function updateEntry(
         data: {
           title: finalTitle,
           body: finalBody,
-          updatedAt: new Date(),
         },
       });
 

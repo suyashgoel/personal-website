@@ -59,6 +59,15 @@ model User {
   @@map("users")
 }
 
+model About {
+  id             Int      @id @default(autoincrement())
+  content        Json
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("about_content")
+}
+
 enum EntryType {
   text
   image
