@@ -44,7 +44,7 @@ export async function createEntry(entry: CreateEntry): Promise<EntryResponse> {
   if (entry.type === ENTRY_TYPE_IMAGE) {
     const image = entry.image;
 
-    const metadata = await sharp(image).metadata();
+    const metadata = await sharp(image as Buffer).metadata();
     if (!metadata.format || !metadata.width || !metadata.height) {
       throw new ImageMetadataError();
     }
@@ -52,7 +52,7 @@ export async function createEntry(entry: CreateEntry): Promise<EntryResponse> {
 
     const uploadParams: UploadParams = {
       key: `${slug}.${extension}`,
-      body: image,
+      body: image as Buffer,
       contentType: `image/${extension}`,
     };
     await uploadFile(uploadParams);
@@ -82,7 +82,6 @@ export async function createEntry(entry: CreateEntry): Promise<EntryResponse> {
     `;
 
       if (entry.type === ENTRY_TYPE_IMAGE && imageMetadata) {
-        // Image entry
         await tx.imageContent.create({
           data: {
             url: getPublicUrl(imageMetadata.key),
@@ -94,7 +93,6 @@ export async function createEntry(entry: CreateEntry): Promise<EntryResponse> {
       }
 
       if (entry.type === ENTRY_TYPE_LINK) {
-        // Link entry
         await tx.linkContent.create({
           data: {
             url: entry.url,
@@ -193,7 +191,7 @@ export async function updateEntry(
   if (updatedData.image && existingEntry.type === ENTRY_TYPE_IMAGE) {
     oldImageKey = getKeyFromUrl(existingEntry.imageContent!.url);
 
-    const metadata = await sharp(updatedData.image).metadata();
+    const metadata = await sharp(updatedData.image as Buffer).metadata();
     if (!metadata.format || !metadata.width || !metadata.height) {
       throw new ImageMetadataError();
     }
@@ -202,7 +200,7 @@ export async function updateEntry(
 
     await uploadFile({
       key: newKey,
-      body: updatedData.image,
+      body: updatedData.image as Buffer,
       contentType: `image/${extension}`,
     });
 

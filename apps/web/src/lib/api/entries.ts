@@ -6,11 +6,13 @@ import {
 import { apiClient } from './client';
 
 export const entriesApi = {
-  getAll: () => apiClient<EntryResponse[]>('/entries'),
+  getAll: (): Promise<EntryResponse[]> =>
+    apiClient<EntryResponse[]>('/entries'),
 
-  getBySlug: (slug: string) => apiClient<EntryResponse>(`/entries/${slug}`),
+  getBySlug: (slug: string): Promise<EntryResponse> =>
+    apiClient<EntryResponse>(`/entries/${slug}`),
 
-  create: (entry: CreateEntry) => {
+  create: (entry: CreateEntry): Promise<EntryResponse> => {
     if (entry.type === 'image' && entry.image) {
       const formData = new FormData();
       formData.append('type', entry.type);
@@ -30,7 +32,7 @@ export const entriesApi = {
     });
   },
 
-  update: (slug: string, entry: UpdateEntry) => {
+  update: (slug: string, entry: UpdateEntry): Promise<EntryResponse> => {
     if (entry.image) {
       const formData = new FormData();
 
@@ -50,7 +52,7 @@ export const entriesApi = {
     });
   },
 
-  delete: async (slug: string) => {
+  delete: async (slug: string): Promise<null> => {
     return apiClient<null>(`/entries/${slug}`, {
       method: 'DELETE',
     });

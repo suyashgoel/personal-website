@@ -5,7 +5,7 @@ import {
 import { apiClient } from './client';
 
 export const recommendationsApi = {
-  getByQuery: (query: string) => {
+  getByQuery: (query: string): Promise<RecommendationsResponse> => {
     const searchParams = new URLSearchParams();
     searchParams.append('query', query);
     return apiClient<RecommendationsResponse>(
@@ -13,7 +13,7 @@ export const recommendationsApi = {
     );
   },
 
-  getBySlug: (slug: string) => {
+  getBySlug: (slug: string): Promise<RecommendationsResponse> => {
     const searchParams = new URLSearchParams();
     searchParams.append('slug', slug);
     return apiClient<RecommendationsResponse>(
@@ -21,6 +21,6 @@ export const recommendationsApi = {
     );
   },
 
-  getTopMatch: (query: string) =>
+  getTopMatch: (query: string): Promise<EntryResponse> =>
     apiClient<EntryResponse>(`/recommendations/top-match/${query}`),
 };

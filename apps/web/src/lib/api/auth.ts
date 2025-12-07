@@ -6,19 +6,21 @@ import {
 import { apiClient } from './client';
 
 export const authApi = {
-  register: (data: RegisterRequest) =>
+  register: (data: RegisterRequest): Promise<UserResponse> =>
     apiClient<UserResponse>('/auth/register', {
       method: 'POST',
       body: JSON.stringify(data),
     }),
 
-  login: (data: LoginRequest) =>
+  login: (data: LoginRequest): Promise<UserResponse> =>
     apiClient<UserResponse>('/auth/login', {
       method: 'POST',
       body: JSON.stringify(data),
     }),
 
-  logout: () => apiClient<null>('/auth/logout', { method: 'POST' }),
+  logout: (): Promise<null> =>
+    apiClient<null>('/auth/logout', { method: 'POST' }),
 
-  getCurrentUser: () => apiClient<UserResponse>('/auth/me'),
+  getCurrentUser: (): Promise<UserResponse> =>
+    apiClient<UserResponse>('/auth/me'),
 };
