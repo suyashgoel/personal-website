@@ -51,7 +51,7 @@ export const createEntrySchema = z.discriminatedUnion('type', [
   createBaseEntrySchema.extend({ type: z.literal('text') }),
   createBaseEntrySchema.extend({
     type: z.literal('image'),
-    image: z.instanceof(Buffer),
+    image: z.union([z.instanceof(Buffer), z.instanceof(File)]),
   }),
   createBaseEntrySchema.extend({
     type: z.literal('link'),
@@ -63,7 +63,7 @@ export const updateEntrySchema = z
   .object({
     title: z.string().min(1).optional(),
     body: z.string().min(1).optional(),
-    image: z.instanceof(Buffer).optional(),
+    image: z.union([z.instanceof(Buffer), z.instanceof(File)]).optional(),
     url: z.string().url().optional(),
   })
   .refine(data => data.title || data.body || data.image || data.url);
