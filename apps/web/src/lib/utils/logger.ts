@@ -1,6 +1,7 @@
+import { envClient } from '@/lib/config/env.client';
 import * as Sentry from '@sentry/nextjs';
 
-const isDev = process.env.NODE_ENV === 'development';
+const isDev = envClient.NODE_ENV === 'development';
 
 export const logger = {
   info: (message: string, context?: Record<string, unknown>) => {
