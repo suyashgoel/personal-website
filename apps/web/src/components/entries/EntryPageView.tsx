@@ -1,8 +1,16 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 import type { EntryPageProps } from '@/lib/types';
 import Image from 'next/image';
+import { RecommendationsSection } from './RecommendationsSection';
 
-export function EntryPageView({ title, body, image, link }: EntryPageProps) {
+export function EntryPageView({
+  slug,
+  title,
+  body,
+  image,
+  link,
+}: EntryPageProps) {
   return (
     <main className="mx-auto max-w-3xl px-6 py-10 space-y-6">
       <Card className="shadow-none border-0 p-0">
@@ -39,6 +47,10 @@ export function EntryPageView({ title, body, image, link }: EntryPageProps) {
       <section className="text-base text-muted-foreground leading-relaxed whitespace-pre-wrap">
         {body}
       </section>
+
+      <Separator />
+
+      <RecommendationsSection slug={slug} title={title} />
     </main>
   );
 }

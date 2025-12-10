@@ -24,5 +24,13 @@ export default async function EntryPage({
   const link: EntryLink | undefined =
     type === 'link' && linkContent ? { url: linkContent.url } : undefined;
 
-  return <EntryPageView title={title} body={body} image={image} link={link} />;
+  return (
+    <EntryPageView
+      slug={slug}
+      title={title}
+      body={body}
+      image={image}
+      link={link}
+    />
+  );
 }
