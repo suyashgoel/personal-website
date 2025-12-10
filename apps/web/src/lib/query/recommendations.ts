@@ -21,6 +21,6 @@ export const useTopMatch = (query: string) => {
   return useQuery({
     queryKey: ['recommendations', 'top-match', query],
     queryFn: () => recommendationsApi.getTopMatch(query),
-    enabled: !!query,
+    enabled: false,
   });
 };

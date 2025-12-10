@@ -1,4 +1,5 @@
 import { AboutContent } from '@personal-website/shared';
+import Link from 'next/link';
 import { SectionHeader } from './SectionHeader';
 
 export function PurposeSection({
@@ -12,7 +13,9 @@ export function PurposeSection({
       <p className="text-base text-muted-foreground leading-relaxed">
         {purpose.why}
       </p>
-      <p className="text-base font-medium">{purpose.invitation}</p>
+      <Link href="/search">
+        <p className="text-base font-medium">{purpose.invitation}</p>
+      </Link>
     </section>
   );
 }
