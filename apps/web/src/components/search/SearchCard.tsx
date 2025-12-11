@@ -15,7 +15,7 @@ import { searchQueryAtom } from '@/lib/state';
 import { logger } from '@/lib/utils/logger';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next/navigation';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 export function SearchCard() {
   const { data: about, isLoading: isLoadingAbout } = useAbout();
@@ -25,7 +25,7 @@ export function SearchCard() {
 
   useEffect(() => {
     setSearchQuery('');
-  }, []);
+  }, [setSearchQuery]);
 
   const placeholders = useMemo(() => {
     return (about?.loves ?? []).map(
@@ -33,11 +33,9 @@ export function SearchCard() {
     );
   }, [about]);
 
-  const trimmedQuery = useMemo(() => {
-    return searchQuery.trim();
-  }, [searchQuery]);
+  const trimmedQuery = searchQuery.trim();
 
-  const { refetch, isFetching } = useTopMatch(trimmedQuery);
+  const { mutate: searchTopMatch, isPending } = useTopMatch();
 
   useEffect(() => {
     if (placeholders.length === 0) return;
@@ -47,24 +45,23 @@ export function SearchCard() {
     return () => clearInterval(interval);
   }, [placeholders]);
 
-  const handleSubmit = useCallback(
-    async (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-      if (!trimmedQuery) return;
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const trimmed = searchQuery.trim();
+    if (!trimmed) return;
 
-      try {
-        const { data } = await refetch();
-        if (data?.slug) {
-          router.push(`/entries/${data.slug}`);
-        } else {
-          logger.error('No match found');
-        }
-      } catch (error) {
-        logger.error('Search failed', { error });
-      }
-    },
-    [trimmedQuery, refetch, router]
-  );
+    searchTopMatch(trimmed, {
+      onSuccess: ({ slug }) => {
+        router.push(`/entries/${slug}`);
+      },
+      onError: error => {
+        logger.error('Search failed', {
+          error,
+          query: trimmed,
+        });
+      },
+    });
+  };
 
   const placeholder =
     isLoadingAbout || placeholders.length === 0
@@ -76,7 +73,7 @@ export function SearchCard() {
       className="w-full sm:w-[70%] md:w-[50%] lg:w-[40%] xl:w-[30%] max-w-2xl"
       onSubmit={handleSubmit}
     >
-      <Card className="max-w-2xl py-10 px-6">
+      <Card className="max-w-2xl py-10 px-4 sm:px-6">
         <CardHeader>
           <CardTitle>Explore</CardTitle>
           <CardDescription>Search to learn more about me!</CardDescription>
@@ -88,11 +85,11 @@ export function SearchCard() {
             className="h-12 text-base"
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            disabled={isFetching}
+            disabled={isPending}
           />
           <div className="flex justify-center">
-            <Button className="w-full" type="submit" disabled={isFetching}>
-              {isFetching ? 'Searching...' : 'Search'}
+            <Button className="w-full" type="submit" disabled={isPending}>
+              {isPending ? 'Searching...' : 'Search'}
             </Button>
           </div>
         </CardContent>

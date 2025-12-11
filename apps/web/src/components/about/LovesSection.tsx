@@ -1,6 +1,8 @@
 import { Badge } from '@/components/ui/badge';
+import { LovesSectionProps } from '@/lib/types/types';
 import { SectionHeader } from './SectionHeader';
-export function LovesSection({ loves }: { loves: string[] }) {
+
+export function LovesSection({ loves }: LovesSectionProps) {
   return (
     <section className="space-y-4">
       <SectionHeader title="Things I love" />

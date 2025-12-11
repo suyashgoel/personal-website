@@ -1,12 +1,8 @@
 import { EntryPageView } from '@/components/entries/EntryPageView';
 import { entriesApi } from '@/lib/api';
-import type { EntryImage, EntryLink } from '@/lib/types';
+import type { EntryImage, EntryLink, EntryPageParams } from '@/lib/types';
 
-export default async function EntryPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+export default async function EntryPage({ params }: EntryPageParams) {
   const { slug } = await params;
 
   const entry = await entriesApi.getBySlug(slug);

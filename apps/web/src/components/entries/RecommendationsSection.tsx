@@ -1,6 +1,6 @@
 'use client';
 
-import { Skeleton } from '@/components/ui/skeleton';
+import { RecommendationsSkeleton } from '@/components/entries/RecommendationsSkeleton';
 import {
   useRecommendationsByQuery,
   useRecommendationsBySlug,
@@ -10,9 +10,11 @@ import {
   RecommendationListProps,
   RecommendationsSectionProps,
 } from '@/lib/types/types';
+import { logger } from '@/lib/utils/logger';
 import { useAtom } from 'jotai';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import { useEffect } from 'react';
 
 function RecommendationList({
   title,
@@ -48,44 +50,49 @@ function RecommendationList({
   );
 }
 
-function LoadingSkeleton() {
-  return (
-    <div className="mt-12 pt-8">
-      <div className="flex flex-col sm:flex-row justify-between items-start gap-6 sm:gap-8">
-        <div className="flex-1 w-full md:w-auto">
-          <Skeleton className="h-6 w-48 mb-4" />
-          <Skeleton className="h-4 w-full mb-2" />
-          <Skeleton className="h-4 w-3/4" />
-        </div>
-
-        <div className="flex flex-col gap-2 w-full md:w-auto md:min-w-72">
-          <Skeleton className="h-9 w-full" />
-          <Skeleton className="h-9 w-full" />
-          <Skeleton className="h-9 w-full" />
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export function RecommendationsSection({
   slug,
   title,
 }: RecommendationsSectionProps) {
   const [searchQuery] = useAtom(searchQueryAtom);
 
-  const { data: entryRecommendations, isLoading: entryLoading } =
-    useRecommendationsBySlug(slug);
-  const { data: queryRecommendations, isLoading: queryLoading } =
-    useRecommendationsByQuery(searchQuery);
+  const {
+    data: entryRecommendations,
+    isLoading: entryLoading,
+    error: entryError,
+  } = useRecommendationsBySlug(slug);
+  const {
+    data: queryRecommendations,
+    isLoading: queryLoading,
+    error: queryError,
+  } = useRecommendationsByQuery(searchQuery);
+
+  useEffect(() => {
+    if (entryError) {
+      logger.error('Failed to fetch entry recommendations', {
+        error: entryError,
+        slug,
+      });
+    }
+  }, [entryError, slug]);
+
+  useEffect(() => {
+    if (queryError) {
+      logger.error('Failed to fetch query recommendations', {
+        error: queryError,
+        query: searchQuery,
+      });
+    }
+  }, [queryError, searchQuery]);
 
   const hasEntryRecs = entryRecommendations && entryRecommendations.length > 0;
   const hasQueryRecs =
     searchQuery && queryRecommendations && queryRecommendations.length > 0;
+
   const isLoading = entryLoading || queryLoading;
 
   if (isLoading) {
-    return <LoadingSkeleton />;
+    return <RecommendationsSkeleton />;
   }
 
   if (!hasEntryRecs && !hasQueryRecs) {

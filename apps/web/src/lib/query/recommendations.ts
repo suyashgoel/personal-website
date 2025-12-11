@@ -1,5 +1,5 @@
 import { recommendationsApi } from '@/lib/api';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 export const useRecommendationsByQuery = (query: string) => {
   return useQuery({
@@ -17,10 +17,8 @@ export const useRecommendationsBySlug = (slug: string) => {
   });
 };
 
-export const useTopMatch = (query: string) => {
-  return useQuery({
-    queryKey: ['recommendations', 'top-match', query],
-    queryFn: () => recommendationsApi.getTopMatch(query),
-    enabled: false,
+export const useTopMatch = () => {
+  return useMutation({
+    mutationFn: (query: string) => recommendationsApi.getTopMatch(query),
   });
 };

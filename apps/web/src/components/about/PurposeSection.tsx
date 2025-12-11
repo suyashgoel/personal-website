@@ -1,12 +1,8 @@
-import { AboutContent } from '@personal-website/shared';
+import { PurposeSectionProps } from '@/lib/types/types';
 import Link from 'next/link';
 import { SectionHeader } from './SectionHeader';
 
-export function PurposeSection({
-  purpose,
-}: {
-  purpose: AboutContent['purpose'];
-}) {
+export function PurposeSection({ purpose }: PurposeSectionProps) {
   return (
     <section className="space-y-3">
       <SectionHeader title="Purpose" />

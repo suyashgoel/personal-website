@@ -1,11 +1,7 @@
-import { AboutContent } from '@personal-website/shared';
+import { ContactSectionProps } from '@/lib/types/types';
 import { SectionHeader } from './SectionHeader';
 
-export function ContactSection({
-  contact,
-}: {
-  contact: AboutContent['contact'];
-}) {
+export function ContactSection({ contact }: ContactSectionProps) {
   return (
     <section className="space-y-3">
       <SectionHeader title="Contact" subtitle={contact.closing} />

@@ -1,13 +1,9 @@
 import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { AboutContent } from '@personal-website/shared';
+import { JourneySectionProps } from '@/lib/types/types';
 import { SectionHeader } from './SectionHeader';
 
-export function JourneySection({
-  journey,
-}: {
-  journey: AboutContent['journey'];
-}) {
+export function JourneySection({ journey }: JourneySectionProps) {
   const sorted = [...journey].sort((a, b) => a.sortOrder - b.sortOrder);
   return (
     <section className="space-y-4">

@@ -1,13 +1,8 @@
 import { Badge } from '@/components/ui/badge';
-import { AboutContent } from '@personal-website/shared';
+import { IdentitySectionProps } from '@/lib/types/types';
 import { SectionHeader } from './SectionHeader';
 
-export function IdentitySection({
-  identity,
-}: {
-  identity: AboutContent['identity'];
-}) {
-  console.log(identity.revelation);
+export function IdentitySection({ identity }: IdentitySectionProps) {
   return (
     <section className="space-y-4">
       <SectionHeader title="Identity" subtitle={identity.revelation} />

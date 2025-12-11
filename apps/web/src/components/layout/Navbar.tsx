@@ -8,9 +8,9 @@ import {
 } from '@/components/ui/navigation-menu';
 import Link from 'next/link';
 
-export function Navbar() {
+export function NavBar() {
   return (
-    <header className="w-full border-b bg-background/80 backdrop-blur">
+    <header className="fixed top-0 z-50 w-full border-b bg-background/80 backdrop-blur">
       <div className="mx-auto flex h-14 max-w-6xl items-center px-4">
         <NavigationMenu className="ml-6">
           <NavigationMenuList>

@@ -1,6 +1,6 @@
-import { AboutContent } from '@personal-website/shared';
+import { HeroSectionProps } from '@/lib/types/types';
 
-export function HeroSection({ hero }: { hero: AboutContent['hero'] }) {
+export function HeroSection({ hero }: HeroSectionProps) {
   return (
     <section className="space-y-4">
       <p className="text-sm uppercase tracking-wide text-muted-foreground">

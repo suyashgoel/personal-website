@@ -6,31 +6,23 @@ const isDev = envClient.NODE_ENV === 'development';
 export const logger = {
   info: (message: string, context?: Record<string, unknown>) => {
     if (isDev) {
-      console.info(`[INFO] ${message}`, context || '');
+      console.info(`[INFO] ${message}`, context);
     }
-    Sentry.addBreadcrumb({
-      message,
-      level: 'info',
-      data: context,
-    });
   },
 
   warn: (message: string, context?: Record<string, unknown>) => {
     if (isDev) {
-      console.warn(`[WARN] ${message}`, context || '');
+      console.warn(`[WARN] ${message}`, context);
     }
-    Sentry.captureMessage(message, {
-      level: 'warning',
-      extra: context,
-    });
   },
 
   error: (error: Error | unknown, context?: Record<string, unknown>) => {
-    if (isDev) {
-      console.error(error, context);
+    console.error('[ERROR]', error, context);
+
+    if (!isDev) {
+      Sentry.captureException(error, {
+        extra: context,
+      });
     }
-    Sentry.captureException(error, {
-      extra: context,
-    });
   },
 };

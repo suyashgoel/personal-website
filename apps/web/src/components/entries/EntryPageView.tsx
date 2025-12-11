@@ -12,10 +12,12 @@ export function EntryPageView({
   link,
 }: EntryPageProps) {
   return (
-    <main className="mx-auto max-w-3xl px-6 py-10 space-y-6">
+    <main className="mx-auto max-w-3xl px-4 sm:px-6 py-10 space-y-6">
       <Card className="shadow-none border-0 p-0">
         <CardHeader className="p-0 pb-2">
-          <CardTitle className="text-3xl font-semibold">{title}</CardTitle>
+          <CardTitle className="text-2xl sm:text-3xl font-semibold">
+            {title}
+          </CardTitle>
         </CardHeader>
       </Card>
 
@@ -28,6 +30,7 @@ export function EntryPageView({
               className="w-full h-auto object-cover"
               width={image.width}
               height={image.height}
+              loading="lazy"
             />
           </CardContent>
         </Card>
