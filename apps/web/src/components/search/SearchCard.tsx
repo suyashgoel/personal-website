@@ -19,21 +19,16 @@ import { useEffect, useMemo, useState } from 'react';
 
 export function SearchCard() {
   const { data: about, isLoading: isLoadingAbout } = useAbout();
-  const [searchQuery, setSearchQuery] = useAtom(searchQueryAtom);
+  const [_, setSearchQuery] = useAtom(searchQueryAtom);
+  const [inputValue, setInputValue] = useState('');
   const [index, setIndex] = useState(0);
   const router = useRouter();
-
-  useEffect(() => {
-    setSearchQuery('');
-  }, [setSearchQuery]);
 
   const placeholders = useMemo(() => {
     return (about?.loves ?? []).map(
       love => love.charAt(0).toUpperCase() + love.slice(1)
     );
   }, [about]);
-
-  const trimmedQuery = searchQuery.trim();
 
   const { mutate: searchTopMatch, isPending } = useTopMatch();
 
@@ -47,8 +42,10 @@ export function SearchCard() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const trimmed = searchQuery.trim();
+    const trimmed = inputValue.trim();
     if (!trimmed) return;
+
+    setSearchQuery(trimmed);
 
     searchTopMatch(trimmed, {
       onSuccess: ({ slug }) => {
@@ -83,8 +80,8 @@ export function SearchCard() {
             type="text"
             placeholder={placeholder}
             className="h-12 text-base"
-            value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
+            value={inputValue}
+            onChange={e => setInputValue(e.target.value)}
             disabled={isPending}
           />
           <div className="flex justify-center">
