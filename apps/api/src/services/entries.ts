@@ -16,6 +16,7 @@ import {
   deleteFile,
   generateEmbedding,
   getKeyFromUrl,
+  getLinkSubtype,
   getPublicUrl,
   slugify,
   uploadFile,
@@ -93,9 +94,11 @@ export async function createEntry(entry: CreateEntry): Promise<EntryResponse> {
       }
 
       if (entry.type === ENTRY_TYPE_LINK) {
+        const subtype = getLinkSubtype(entry.url);
         await tx.linkContent.create({
           data: {
             url: entry.url,
+            subtype: subtype ?? null,
             entryId: newEntry.id,
           },
         });
