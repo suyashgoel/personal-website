@@ -26,10 +26,20 @@ export default async function recommendationsRoutes(fastify: FastifyInstance) {
       },
     },
     async (request: FastifyRequest, reply: FastifyReply) => {
-      const { query, slug } = request.query as RecommendationsParams;
+      const {
+        query,
+        slug,
+        excludeSlugs = [],
+      } = request.query as RecommendationsParams;
       try {
         if (query) {
-          const recommendations = await getRecommendationsByQuery(query);
+          const excludeSlugsArray = Array.isArray(excludeSlugs)
+            ? excludeSlugs
+            : [excludeSlugs];
+          const recommendations = await getRecommendationsByQuery(
+            query,
+            excludeSlugsArray
+          );
           request.log.info({ query }, 'Recommendations fetched');
           return reply.code(200).send(recommendations);
         }

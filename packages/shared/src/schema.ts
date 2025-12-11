@@ -101,6 +101,9 @@ export const recommendationsParamsSchema = z
   .object({
     query: z.string().min(1).optional(),
     slug: z.string().min(1).optional(),
+    excludeSlugs: z
+      .union([z.string().min(1), z.array(z.string().min(1))])
+      .optional(),
   })
   .refine(data => Boolean(data.query) !== Boolean(data.slug));
 

@@ -5,9 +5,13 @@ import {
 import { apiClient } from './client';
 
 export const recommendationsApi = {
-  getByQuery: (query: string): Promise<RecommendationsResponse> => {
+  getByQuery: (
+    query: string,
+    excludeSlugs: string[] = []
+  ): Promise<RecommendationsResponse> => {
     const searchParams = new URLSearchParams();
     searchParams.append('query', query);
+    excludeSlugs.forEach(slug => searchParams.append('excludeSlugs', slug));
     return apiClient<RecommendationsResponse>(
       `/recommendations?${searchParams.toString()}`
     );

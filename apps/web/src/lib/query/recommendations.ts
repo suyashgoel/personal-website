@@ -1,10 +1,13 @@
 import { recommendationsApi } from '@/lib/api';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
-export const useRecommendationsByQuery = (query: string) => {
+export const useRecommendationsByQuery = (
+  query: string,
+  excludeSlugs: string[]
+) => {
   return useQuery({
-    queryKey: ['recommendations', 'query', query],
-    queryFn: () => recommendationsApi.getByQuery(query),
+    queryKey: ['recommendations', 'query', query, excludeSlugs],
+    queryFn: () => recommendationsApi.getByQuery(query, excludeSlugs),
     enabled: !!query,
   });
 };

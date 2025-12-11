@@ -65,7 +65,7 @@ export function RecommendationsSection({
     data: queryRecommendations,
     isLoading: queryLoading,
     error: queryError,
-  } = useRecommendationsByQuery(searchQuery);
+  } = useRecommendationsByQuery(searchQuery, [slug]);
 
   useEffect(() => {
     if (entryError) {

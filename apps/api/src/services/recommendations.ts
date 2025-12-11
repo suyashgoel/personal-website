@@ -8,19 +8,32 @@ const NUM_RECOMMENDATIONS = 2;
 
 export async function getRecommendations(
   embedding: number[],
-  k: number
+  k: number,
+  excludeSlugs: string[] = []
 ): Promise<RecommendationItem[]> {
-  const recommendationItems = await db.$queryRaw<RecommendationItem[]>`
+  if (excludeSlugs.length > 0) {
+    return db.$queryRaw<RecommendationItem[]>`
       SELECT
         slug,
         title,
         1 - (embedding <=> ${JSON.stringify(embedding)}::vector) AS similarity
       FROM entries
       WHERE embedding IS NOT NULL
+        AND slug != ALL(${excludeSlugs}::text[])
       ORDER BY embedding <=> ${JSON.stringify(embedding)}::vector ASC
       LIMIT ${k}
     `;
-  return recommendationItems;
+  }
+  return db.$queryRaw<RecommendationItem[]>`
+    SELECT
+      slug,
+      title,
+      1 - (embedding <=> ${JSON.stringify(embedding)}::vector) AS similarity
+    FROM entries
+    WHERE embedding IS NOT NULL
+    ORDER BY embedding <=> ${JSON.stringify(embedding)}::vector ASC
+    LIMIT ${k}
+  `;
 }
 
 export async function getRecommendationsBySlug(
@@ -41,10 +54,15 @@ export async function getRecommendationsBySlug(
 }
 
 export async function getRecommendationsByQuery(
-  query: string
+  query: string,
+  excludeSlugs: string[] = []
 ): Promise<RecommendationItem[]> {
   const embedding = await generateEmbedding(query);
-  const results = await getRecommendations(embedding, NUM_RECOMMENDATIONS);
+  const results = await getRecommendations(
+    embedding,
+    NUM_RECOMMENDATIONS,
+    excludeSlugs
+  );
   return results;
 }
 
