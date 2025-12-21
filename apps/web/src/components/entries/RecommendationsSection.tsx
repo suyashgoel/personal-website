@@ -10,7 +10,6 @@ import {
   RecommendationListProps,
   RecommendationsSectionProps,
 } from '@/lib/types/types';
-import { logger } from '@/lib/utils/logger';
 import { useAtom } from 'jotai';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
@@ -69,7 +68,7 @@ export function RecommendationsSection({
 
   useEffect(() => {
     if (entryError) {
-      logger.error('Failed to fetch entry recommendations', {
+      console.error('[ERROR] Failed to fetch entry recommendations', {
         error: entryError,
         slug,
       });
@@ -78,7 +77,7 @@ export function RecommendationsSection({
 
   useEffect(() => {
     if (queryError) {
-      logger.error('Failed to fetch query recommendations', {
+      console.error('[ERROR] Failed to fetch query recommendations', {
         error: queryError,
         query: searchQuery,
       });

@@ -1,4 +1,4 @@
-import { envClient } from '@/lib/config/env.client';
+import { env } from '../config/env';
 
 export class ApiError extends Error {
   constructor(
@@ -17,17 +17,14 @@ export async function apiClient<T>(
   try {
     const isFormData = options?.body instanceof FormData;
 
-    const response = await fetch(
-      `${envClient.NEXT_PUBLIC_API_URL}${endpoint}`,
-      {
-        ...options,
-        credentials: 'include',
-        headers: {
-          ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
-          ...options?.headers,
-        },
-      }
-    );
+    const response = await fetch(`${env.NEXT_PUBLIC_API_URL}${endpoint}`, {
+      ...options,
+      credentials: 'include',
+      headers: {
+        ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
+        ...options?.headers,
+      },
+    });
 
     if (!response.ok) {
       let errorMessage = response.statusText || 'Request failed';

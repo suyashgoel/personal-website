@@ -1,7 +1,6 @@
 'use client';
 
 import { ErrorMessage } from '@/components/error/ErrorMessage';
-import { logger } from '@/lib/utils/logger';
 import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 
@@ -13,7 +12,7 @@ export default function Error({
   const pathname = usePathname();
 
   useEffect(() => {
-    logger.error(error, {
+    console.error('[ERROR]', error, {
       component: 'RouteErrorBoundary',
       digest: error.digest,
       pathname,

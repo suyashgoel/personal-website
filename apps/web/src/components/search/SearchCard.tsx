@@ -12,7 +12,6 @@ import { Input } from '@/components/ui/input';
 import { useAbout } from '@/lib/query/about';
 import { useTopMatch } from '@/lib/query/recommendations';
 import { searchQueryAtom } from '@/lib/state';
-import { logger } from '@/lib/utils/logger';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
@@ -52,7 +51,7 @@ export function SearchCard() {
         router.push(`/entries/${slug}`);
       },
       onError: error => {
-        logger.error('Search failed', {
+        console.error('[ERROR] Search top match failed', {
           error,
           query: trimmed,
         });
