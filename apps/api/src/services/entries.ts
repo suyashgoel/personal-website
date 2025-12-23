@@ -9,23 +9,18 @@ import {
   EntryAlreadyExistsError,
   EntryNotFoundError,
   ImageMetadataError,
-  InvalidUpdateError,
 } from '../errors';
 import { ImageMetadata, UploadParams } from '../types';
 import {
   deleteFile,
   generateEmbedding,
   getKeyFromUrl,
-  getLinkSubtype,
   getPublicUrl,
   slugify,
   uploadFile,
 } from '../utils';
 
 const CONTENT_MAX_LENGTH = 10000;
-
-const ENTRY_TYPE_IMAGE = 'image';
-const ENTRY_TYPE_LINK = 'link';
 
 export async function createEntry(entry: CreateEntry): Promise<EntryResponse> {
   const content = `${entry.title}\n${entry.body}`
@@ -42,28 +37,26 @@ export async function createEntry(entry: CreateEntry): Promise<EntryResponse> {
   }
 
   let imageMetadata: ImageMetadata | null = null;
-  if (entry.type === ENTRY_TYPE_IMAGE) {
-    const image = entry.image;
+  const image = entry.image;
 
-    const metadata = await sharp(image as Buffer).metadata();
-    if (!metadata.format || !metadata.width || !metadata.height) {
-      throw new ImageMetadataError();
-    }
-    const extension = metadata.format === 'jpg' ? 'jpeg' : metadata.format;
-
-    const uploadParams: UploadParams = {
-      key: `${slug}.${extension}`,
-      body: image as Buffer,
-      contentType: `image/${extension}`,
-    };
-    await uploadFile(uploadParams);
-
-    imageMetadata = {
-      width: metadata.width,
-      height: metadata.height,
-      key: uploadParams.key,
-    };
+  const metadata = await sharp(image as Buffer).metadata();
+  if (!metadata.format || !metadata.width || !metadata.height) {
+    throw new ImageMetadataError();
   }
+  const extension = metadata.format === 'jpg' ? 'jpeg' : metadata.format;
+
+  const uploadParams: UploadParams = {
+    key: `${slug}.${extension}`,
+    body: image as Buffer,
+    contentType: `image/${extension}`,
+  };
+  await uploadFile(uploadParams);
+
+  imageMetadata = {
+    width: metadata.width,
+    height: metadata.height,
+    key: uploadParams.key,
+  };
 
   try {
     const result = await db.$transaction(async tx => {
@@ -82,34 +75,21 @@ export async function createEntry(entry: CreateEntry): Promise<EntryResponse> {
       WHERE id = ${newEntry.id}
     `;
 
-      if (entry.type === ENTRY_TYPE_IMAGE && imageMetadata) {
-        await tx.imageContent.create({
-          data: {
-            url: getPublicUrl(imageMetadata.key),
-            width: imageMetadata.width,
-            height: imageMetadata.height,
-            entryId: newEntry.id,
-          },
-        });
-      }
-
-      if (entry.type === ENTRY_TYPE_LINK) {
-        const subtype = getLinkSubtype(entry.url);
-        await tx.linkContent.create({
-          data: {
-            url: entry.url,
-            subtype: subtype ?? null,
-            entryId: newEntry.id,
-          },
-        });
-      }
+      await tx.imageContent.create({
+        data: {
+          url: getPublicUrl(imageMetadata.key),
+          width: imageMetadata.width,
+          height: imageMetadata.height,
+          entryId: newEntry.id,
+        },
+      });
 
       return tx.entry.findUnique({
         where: { id: newEntry.id },
-        include: { imageContent: true, linkContent: true },
+        include: { imageContent: true },
       });
     });
-    return result!;
+    return result as EntryResponse;
   } catch (err) {
     if (imageMetadata) {
       try {
@@ -127,7 +107,7 @@ export async function getEntries(): Promise<EntryResponse[]> {
     orderBy: {
       createdAt: 'desc',
     },
-    include: { imageContent: true, linkContent: true },
+    include: { imageContent: true },
   });
   return entries;
 }
@@ -135,7 +115,7 @@ export async function getEntries(): Promise<EntryResponse[]> {
 export async function getEntry(slug: string): Promise<EntryResponse> {
   const entry = await db.entry.findUnique({
     where: { slug: slug },
-    include: { imageContent: true, linkContent: true },
+    include: { imageContent: true },
   });
   if (!entry) {
     throw new EntryNotFoundError();
@@ -168,113 +148,38 @@ export async function updateEntry(
 ): Promise<EntryResponse> {
   const existingEntry = await getEntry(slug);
 
-  if (updatedData.image && existingEntry.type !== ENTRY_TYPE_IMAGE) {
-    throw new InvalidUpdateError(
-      'Cannot update image field on non-image entry'
-    );
-  }
-  if (updatedData.url && existingEntry.type !== ENTRY_TYPE_LINK) {
-    throw new InvalidUpdateError('Cannot update url field on non-link entry');
-  }
-
-  const finalTitle = updatedData.title ?? existingEntry.title;
-  const finalBody = updatedData.body ?? existingEntry.body;
+  const newTitle = updatedData.title ?? existingEntry.title;
+  const newBody = updatedData.body ?? existingEntry.body;
 
   let newEmbedding: number[] | null = null;
   if (updatedData.title || updatedData.body) {
-    const content = `${finalTitle}\n${finalBody}`
+    const content = `${newTitle}\n${newBody}`
       .trim()
       .slice(0, CONTENT_MAX_LENGTH);
     newEmbedding = await generateEmbedding(content);
   }
-
-  let newImageMetadata: ImageMetadata | null = null;
-  let oldImageKey: string | null = null;
-
-  if (updatedData.image && existingEntry.type === ENTRY_TYPE_IMAGE) {
-    oldImageKey = getKeyFromUrl(existingEntry.imageContent!.url);
-
-    const metadata = await sharp(updatedData.image as Buffer).metadata();
-    if (!metadata.format || !metadata.width || !metadata.height) {
-      throw new ImageMetadataError();
-    }
-    const extension = metadata.format === 'jpg' ? 'jpeg' : metadata.format;
-    const newKey = `${slug}.${extension}`;
-
-    await uploadFile({
-      key: newKey,
-      body: updatedData.image as Buffer,
-      contentType: `image/${extension}`,
+  const result = await db.$transaction(async tx => {
+    await tx.entry.update({
+      where: { slug },
+      data: {
+        title: newTitle,
+        body: newBody,
+      },
     });
 
-    newImageMetadata = {
-      width: metadata.width,
-      height: metadata.height,
-      key: newKey,
-    };
-  }
-
-  try {
-    const result = await db.$transaction(async tx => {
-      await tx.entry.update({
-        where: { slug },
-        data: {
-          title: finalTitle,
-          body: finalBody,
-        },
-      });
-
-      if (newEmbedding) {
-        await tx.$executeRaw`
+    if (newEmbedding) {
+      await tx.$executeRaw`
           UPDATE entries 
           SET embedding = ${JSON.stringify(newEmbedding)}::vector 
           WHERE id = ${existingEntry.id}
         `;
-      }
-
-      if (newImageMetadata) {
-        await tx.imageContent.update({
-          where: { entryId: existingEntry.id },
-          data: {
-            url: getPublicUrl(newImageMetadata.key),
-            width: newImageMetadata.width,
-            height: newImageMetadata.height,
-          },
-        });
-      }
-
-      if (updatedData.url && existingEntry.type === ENTRY_TYPE_LINK) {
-        await tx.linkContent.update({
-          where: { entryId: existingEntry.id },
-          data: {
-            url: updatedData.url,
-          },
-        });
-      }
-
-      return tx.entry.findUnique({
-        where: { id: existingEntry.id },
-        include: { imageContent: true, linkContent: true },
-      })!;
-    });
-
-    if (oldImageKey) {
-      try {
-        await deleteFile(oldImageKey);
-      } catch {
-        // Ignore error
-      }
     }
 
-    return result!;
-  } catch (err) {
-    if (newImageMetadata) {
-      try {
-        await deleteFile(newImageMetadata.key);
-      } catch {
-        // Ignore error
-      }
-    }
-    throw err;
-  }
+    return tx.entry.findUnique({
+      where: { id: existingEntry.id },
+      include: { imageContent: true },
+    })!;
+  });
+
+  return result as EntryResponse;
 }

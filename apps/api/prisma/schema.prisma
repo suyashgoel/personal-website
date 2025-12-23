@@ -19,7 +19,6 @@ model Entry {
   embedding Unsupported("vector(3072)")?
   body         String
   imageContent ImageContent?
-  linkContent  LinkContent?
 
   @@map("entries")
 }
@@ -33,19 +32,6 @@ model ImageContent {
   entry   Entry  @relation(fields: [entryId], references: [id], onDelete: Cascade)
 
   @@map("entry_images")
-}
-
-model LinkContent {
-  id            Int     @id @default(autoincrement())
-  url           String
-  resolvedTitle String?
-  resolvedDesc  String?
-  resolvedImage String?
-  subtype       String?
-  entryId       Int     @unique
-  entry         Entry   @relation(fields: [entryId], references: [id], onDelete: Cascade)
-
-  @@map("entry_links")
 }
 
 model User {
@@ -69,9 +55,7 @@ model About {
 }
 
 enum EntryType {
-  text
   image
-  link
 }
 
 enum RoleType {
