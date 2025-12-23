@@ -109,7 +109,7 @@ export async function getEntries(): Promise<EntryResponse[]> {
     },
     include: { imageContent: true },
   });
-  return entries;
+  return entries as EntryResponse[];
 }
 
 export async function getEntry(slug: string): Promise<EntryResponse> {
@@ -120,7 +120,7 @@ export async function getEntry(slug: string): Promise<EntryResponse> {
   if (!entry) {
     throw new EntryNotFoundError();
   }
-  return entry;
+  return entry as EntryResponse;
 }
 
 export async function deleteEntry(slug: string): Promise<void> {

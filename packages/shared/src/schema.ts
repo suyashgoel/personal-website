@@ -26,7 +26,7 @@ export const entryResponseSchema = z.object({
   body: z.string().min(1),
   slug: z.string().min(1),
   type: entryTypeSchema,
-  imageContent: imageContentSchema.nullable(),
+  imageContent: imageContentSchema,
 });
 
 export const entriesResponseSchema = z.array(entryResponseSchema);
