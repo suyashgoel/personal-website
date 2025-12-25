@@ -19,8 +19,21 @@ import {
   slugify,
   uploadFile,
 } from '../utils';
+import { CACHE_KEYS, del, delPattern, get, set } from '../utils/cache';
 
 const CONTENT_MAX_LENGTH = 10000;
+const ENTRIES_LIST_TTL = 30 * 60; // 30 minutes
+const ENTRY_SINGLE_TTL = 60 * 60; // 1 hour
+
+async function invalidateEntryCaches(slug?: string): Promise<void> {
+  if (slug) {
+    await del(CACHE_KEYS.entry(slug));
+  }
+  await delPattern(CACHE_KEYS.recommendationsBySlug('*'));
+  await delPattern(CACHE_KEYS.recommendationsByQuery('*'));
+  await delPattern(CACHE_KEYS.topMatch('*'));
+  await del(CACHE_KEYS.entries);
+}
 
 export async function createEntry(entry: CreateEntry): Promise<EntryResponse> {
   const content = `${entry.title}\n${entry.body}`
@@ -89,6 +102,10 @@ export async function createEntry(entry: CreateEntry): Promise<EntryResponse> {
         include: { imageContent: true },
       });
     });
+
+    await set(CACHE_KEYS.entry(result!.slug), result, ENTRY_SINGLE_TTL);
+    await invalidateEntryCaches();
+
     return result as EntryResponse;
   } catch (err) {
     if (imageMetadata) {
@@ -103,16 +120,28 @@ export async function createEntry(entry: CreateEntry): Promise<EntryResponse> {
 }
 
 export async function getEntries(): Promise<EntryResponse[]> {
+  const cached = await get<EntryResponse[]>(CACHE_KEYS.entries);
+  if (cached) {
+    return cached;
+  }
+
   const entries = await db.entry.findMany({
     orderBy: {
       createdAt: 'desc',
     },
     include: { imageContent: true },
   });
+
+  await set(CACHE_KEYS.entries, entries, ENTRIES_LIST_TTL);
   return entries as EntryResponse[];
 }
 
 export async function getEntry(slug: string): Promise<EntryResponse> {
+  const cached = await get<EntryResponse>(CACHE_KEYS.entry(slug));
+  if (cached) {
+    return cached;
+  }
+
   const entry = await db.entry.findUnique({
     where: { slug: slug },
     include: { imageContent: true },
@@ -120,6 +149,8 @@ export async function getEntry(slug: string): Promise<EntryResponse> {
   if (!entry) {
     throw new EntryNotFoundError();
   }
+
+  await set(CACHE_KEYS.entry(slug), entry, ENTRY_SINGLE_TTL);
   return entry as EntryResponse;
 }
 
@@ -140,16 +171,35 @@ export async function deleteEntry(slug: string): Promise<void> {
   await db.entry.delete({
     where: { slug },
   });
+
+  await invalidateEntryCaches(slug);
 }
 
 export async function updateEntry(
   slug: string,
   updatedData: UpdateEntry
 ): Promise<EntryResponse> {
-  const existingEntry = await getEntry(slug);
+  let existingEntry: EntryResponse;
+  const cached = await get<EntryResponse>(CACHE_KEYS.entry(slug));
+  if (cached) {
+    existingEntry = cached;
+  } else {
+    const entry = await db.entry.findUnique({
+      where: { slug },
+      include: { imageContent: true },
+    });
+    if (!entry) {
+      throw new EntryNotFoundError();
+    }
+    existingEntry = entry as EntryResponse;
+  }
 
   const newTitle = updatedData.title ?? existingEntry.title;
   const newBody = updatedData.body ?? existingEntry.body;
+
+  if (newTitle === existingEntry.title && newBody === existingEntry.body) {
+    return existingEntry;
+  }
 
   let newEmbedding: number[] | null = null;
   if (updatedData.title || updatedData.body) {
@@ -180,6 +230,9 @@ export async function updateEntry(
       include: { imageContent: true },
     })!;
   });
+
+  await set(CACHE_KEYS.entry(slug), result, ENTRY_SINGLE_TTL);
+  await invalidateEntryCaches();
 
   return result as EntryResponse;
 }

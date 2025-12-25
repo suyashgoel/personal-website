@@ -14,8 +14,7 @@ import {
   validatorCompiler,
   ZodTypeProvider,
 } from 'fastify-type-provider-zod';
-import { logger } from './clients';
-import { redisClient } from './clients/redis';
+import { logger, redisClient } from './clients';
 import { cookieConfig, env } from './config';
 import aboutRoutes from './routes/about';
 import authRoutes from './routes/auth';

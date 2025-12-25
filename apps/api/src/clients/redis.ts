@@ -3,6 +3,7 @@ import { env } from '../config/env';
 
 export const redisClient = new Redis(env.REDIS_URL, {
   connectionName: 'personal-website',
-  connectTimeout: 500,
-  maxRetriesPerRequest: 1,
+  connectTimeout: 1000,
+  maxRetriesPerRequest: null,
+  enableReadyCheck: true,
 });
