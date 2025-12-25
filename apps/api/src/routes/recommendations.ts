@@ -18,6 +18,12 @@ export default async function recommendationsRoutes(fastify: FastifyInstance) {
   fastify.get(
     '/',
     {
+      config: {
+        rateLimit: {
+          max: 10,
+          timeWindow: '1 minute',
+        },
+      },
       schema: {
         querystring: recommendationsParamsSchema,
         response: {
@@ -66,6 +72,9 @@ export default async function recommendationsRoutes(fastify: FastifyInstance) {
   fastify.get(
     '/top-match/:query',
     {
+      config: {
+        rateLimit: { max: 10, timeWindow: '1 minute' },
+      },
       schema: {
         params: topMatchParamsSchema,
         response: {

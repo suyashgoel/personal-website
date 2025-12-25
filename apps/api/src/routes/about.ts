@@ -28,6 +28,9 @@ export default async function aboutRoutes(fastify: FastifyInstance) {
     '/',
     {
       preHandler: [fastify.authenticate, fastify.authorize],
+      config: {
+        rateLimit: false,
+      },
       schema: {
         body: aboutContentSchema,
         response: { 200: aboutContentSchema },

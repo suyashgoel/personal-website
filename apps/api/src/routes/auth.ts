@@ -15,6 +15,9 @@ export default async function authRoutes(fastify: FastifyInstance) {
   fastify.post(
     '/register',
     {
+      config: {
+        rateLimit: { max: 5, timeWindow: '10 minutes' },
+      },
       schema: {
         body: registerRequestSchema,
         response: {
@@ -46,6 +49,9 @@ export default async function authRoutes(fastify: FastifyInstance) {
   fastify.post(
     '/login',
     {
+      config: {
+        rateLimit: { max: 5, timeWindow: '1 minute' },
+      },
       schema: {
         body: loginRequestSchema,
         response: {
@@ -78,6 +84,9 @@ export default async function authRoutes(fastify: FastifyInstance) {
     '/logout',
     {
       preHandler: fastify.authenticate,
+      config: {
+        rateLimit: false,
+      },
     },
     async (request: FastifyRequest, reply: FastifyReply) => {
       const user = request.user as JWTPayload;
@@ -91,6 +100,9 @@ export default async function authRoutes(fastify: FastifyInstance) {
     '/me',
     {
       preHandler: fastify.authenticate,
+      config: {
+        rateLimit: false,
+      },
       schema: {
         response: {
           200: userResponseSchema,

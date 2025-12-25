@@ -24,6 +24,9 @@ export default async function entriesRoutes(fastify: FastifyInstance) {
     '/',
     {
       preHandler: [fastify.authenticate, fastify.authorize],
+      config: {
+        rateLimit: false,
+      },
       schema: {
         body: createEntrySchema,
         response: {
@@ -103,6 +106,9 @@ export default async function entriesRoutes(fastify: FastifyInstance) {
     '/:slug',
     {
       preHandler: [fastify.authenticate, fastify.authorize],
+      config: {
+        rateLimit: false,
+      },
       schema: {
         params: entryParamsSchema,
         response: { 204: nullResponseSchema },
@@ -133,6 +139,9 @@ export default async function entriesRoutes(fastify: FastifyInstance) {
     '/:slug',
     {
       preHandler: [fastify.authenticate, fastify.authorize],
+      config: {
+        rateLimit: false,
+      },
       schema: {
         params: entryParamsSchema,
         body: updateEntrySchema,

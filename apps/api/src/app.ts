@@ -2,6 +2,7 @@ import cookie from '@fastify/cookie';
 import cors from '@fastify/cors';
 import jwt from '@fastify/jwt';
 import multipart from '@fastify/multipart';
+import rateLimit from '@fastify/rate-limit';
 import Fastify, {
   FastifyBaseLogger,
   FastifyReply,
@@ -14,6 +15,7 @@ import {
   ZodTypeProvider,
 } from 'fastify-type-provider-zod';
 import { logger } from './clients';
+import { redisClient } from './clients/redis';
 import { cookieConfig, env } from './config';
 import aboutRoutes from './routes/about';
 import authRoutes from './routes/auth';
@@ -50,6 +52,13 @@ export function buildApp(opts: FastifyServerOptions = {}) {
     sign: {
       expiresIn: '7d',
     },
+  });
+
+  app.register(rateLimit, {
+    max: 60,
+    timeWindow: '1 minute',
+    keyGenerator: req => req.ip,
+    redis: redisClient,
   });
 
   app.decorate(
