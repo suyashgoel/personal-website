@@ -11,7 +11,7 @@ export default function RootLayout({
     <html lang="en" className="h-full">
       <body className="pt-14 h-full flex flex-col">
         <NavBar />
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col items-center">
           <Providers>{children}</Providers>
         </div>
       </body>

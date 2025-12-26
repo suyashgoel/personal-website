@@ -14,6 +14,7 @@ import { useState } from 'react';
 export function SearchCard() {
   const [_, setSearchQuery] = useAtom(searchQueryAtom);
   const [inputValue, setInputValue] = useState('');
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const router = useRouter();
 
   const { mutate: searchTopMatch, isPending } = useTopMatch();
@@ -27,13 +28,17 @@ export function SearchCard() {
 
     searchTopMatch(trimmed, {
       onSuccess: ({ slug }) => {
+        setErrorMessage(null);
         router.push(`/entries/${slug}`);
       },
       onError: error => {
         console.error('[ERROR] Search top match failed', {
           error,
           query: trimmed,
+          component: 'SearchCard',
+          timestamp: new Date().toISOString(),
         });
+        setErrorMessage('Search failed. Please try again.');
       },
     });
   };
@@ -51,12 +56,16 @@ export function SearchCard() {
 
       <form onSubmit={handleSubmit} className="space-y-5">
         <div className="relative">
-          <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/50" />
+          <Search
+            className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/50"
+            aria-hidden="true"
+          />
           <Input
             type="text"
             placeholder="Ask anything..."
             className="h-12 pl-11 pr-4 text-base font-light border-border transition-colors placeholder:text-muted-foreground/50 w-full"
             value={inputValue}
+            aria-label="Search"
             onChange={e => setInputValue(e.target.value)}
             disabled={isPending}
             autoFocus
@@ -72,6 +81,12 @@ export function SearchCard() {
           {isPending ? 'Searching...' : 'Search'}
         </Button>
       </form>
+
+      {errorMessage && (
+        <p className="mt-4 text-sm text-destructive text-center">
+          {errorMessage}
+        </p>
+      )}
     </>
   );
 }
