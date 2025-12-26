@@ -1,43 +1,22 @@
 'use client';
 
+import type React from 'react';
+
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { useAbout } from '@/lib/query/about';
 import { useTopMatch } from '@/lib/query/recommendations';
 import { searchQueryAtom } from '@/lib/state';
 import { useAtom } from 'jotai';
+import { Search } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import { useState } from 'react';
 
 export function SearchCard() {
-  const { data: about, isLoading: isLoadingAbout } = useAbout();
   const [_, setSearchQuery] = useAtom(searchQueryAtom);
   const [inputValue, setInputValue] = useState('');
-  const [index, setIndex] = useState(0);
   const router = useRouter();
 
-  const placeholders = useMemo(() => {
-    return (about?.loves ?? []).map(
-      love => love.charAt(0).toUpperCase() + love.slice(1)
-    );
-  }, [about]);
-
   const { mutate: searchTopMatch, isPending } = useTopMatch();
-
-  useEffect(() => {
-    if (placeholders.length === 0) return;
-    const interval = setInterval(() => {
-      setIndex(prev => (prev + 1) % placeholders.length);
-    }, 3000);
-    return () => clearInterval(interval);
-  }, [placeholders]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -59,37 +38,40 @@ export function SearchCard() {
     });
   };
 
-  const placeholder =
-    isLoadingAbout || placeholders.length === 0
-      ? 'Search...'
-      : placeholders[index];
-
   return (
-    <form
-      className="w-full sm:w-[70%] md:w-[50%] lg:w-[40%] xl:w-[30%] max-w-2xl"
-      onSubmit={handleSubmit}
-    >
-      <Card className="max-w-2xl py-10 px-4 sm:px-6">
-        <CardHeader>
-          <CardTitle>Explore</CardTitle>
-          <CardDescription>Search to learn more about me!</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
+    <>
+      <header className="mb-10">
+        <h1 className="mb-2 text-4xl font-light tracking-tight text-primary sm:text-5xl md:text-6xl">
+          Explore
+        </h1>
+        <p className="text-base text-muted-foreground sm:text-lg">
+          Search to explore my world
+        </p>
+      </header>
+
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <div className="relative">
+          <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/50" />
           <Input
             type="text"
-            placeholder={placeholder}
-            className="h-12 text-base"
+            placeholder="Ask anything..."
+            className="h-12 pl-11 pr-4 text-base font-light border-border transition-colors placeholder:text-muted-foreground/50 w-full"
             value={inputValue}
             onChange={e => setInputValue(e.target.value)}
             disabled={isPending}
+            autoFocus
           />
-          <div className="flex justify-center">
-            <Button className="w-full" type="submit" disabled={isPending}>
-              {isPending ? 'Searching...' : 'Search'}
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    </form>
+        </div>
+
+        <Button
+          type="submit"
+          variant="outline"
+          disabled={isPending || !inputValue.trim()}
+          className="w-full py-2.5 text-sm font-light tracking-tight text-primary border-border rounded-lg transition-all hover:bg-accent"
+        >
+          {isPending ? 'Searching...' : 'Search'}
+        </Button>
+      </form>
+    </>
   );
 }

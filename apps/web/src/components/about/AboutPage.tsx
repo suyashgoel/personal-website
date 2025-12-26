@@ -6,7 +6,7 @@ export function AboutPage({ content }: AboutPageProps) {
   return (
     <main className="mx-auto max-w-3xl px-4 pt-6 pb-12 sm:px-6 sm:pt-8 sm:pb-16 md:pt-12 md:pb-24 lg:px-8">
       <header className="mb-12">
-        <h1 className="mb-3 text-4xl font-light tracking-tight text-primary sm:text-5xl md:text-6xl">
+        <h1 className="mb-3 text-4xl font-light tracking-tight text-primary sm:text-5xl md:text-5xl">
           Suyash Goel
         </h1>
       </header>
@@ -15,7 +15,7 @@ export function AboutPage({ content }: AboutPageProps) {
         {content.body.split('\n\n').map((paragraph, index) => (
           <p
             key={index}
-            className="text-pretty text-base text-foreground/90 sm:text-lg md:text-xl"
+            className="text-pretty text-base font-light text-foreground/90 sm:text-lg md:text-xl"
           >
             {paragraph}
           </p>
