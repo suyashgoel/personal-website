@@ -100,33 +100,11 @@ export const nullResponseSchema = z.null();
 // About Schemas
 
 export const aboutContentSchema = z.object({
-  hero: z.object({
-    name: z.string(),
-    introduction: z.string(),
-  }),
-  journey: z.array(
-    z.object({
-      company: z.string(),
-      role: z.string(),
-      period: z.string(),
-      description: z.string(),
-      sortOrder: z.number(),
-    })
-  ),
-  identity: z.object({
-    statements: z.array(z.string()),
-    revelation: z.string(),
-  }),
-  loves: z.array(z.string()),
-  purpose: z.object({
-    why: z.string(),
-    invitation: z.string(),
-  }),
+  body: z.string().min(1),
   contact: z.object({
-    closing: z.string(),
     email: z.string().email(),
+    github: z.string().url(),
     linkedin: z.string().url(),
-    x: z.string().url(),
   }),
 });
 

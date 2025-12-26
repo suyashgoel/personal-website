@@ -37,32 +37,3 @@ export interface ErrorMessageProps {
 export interface AboutPageProps {
   content: AboutContent;
 }
-
-export interface HeroSectionProps {
-  hero: AboutContent['hero'];
-}
-
-export interface JourneySectionProps {
-  journey: AboutContent['journey'];
-}
-
-export interface IdentitySectionProps {
-  identity: AboutContent['identity'];
-}
-
-export interface LovesSectionProps {
-  loves: AboutContent['loves'];
-}
-
-export interface PurposeSectionProps {
-  purpose: AboutContent['purpose'];
-}
-
-export interface ContactSectionProps {
-  contact: AboutContent['contact'];
-}
-
-export interface SectionHeaderProps {
-  title: string;
-  subtitle?: string;
-}
