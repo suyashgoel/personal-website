@@ -9,9 +9,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="h-full">
-      <body className="pt-14 h-full flex flex-col">
+      <body className="pt-14 min-h-screen flex flex-col">
         <NavBar />
-        <div className="flex-1 flex flex-col items-center">
+        <div className="flex-1 flex flex-col items-center w-full">
           <Providers>{children}</Providers>
         </div>
       </body>

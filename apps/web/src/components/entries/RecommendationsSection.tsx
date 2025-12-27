@@ -11,8 +11,8 @@ function RecommendationList({
   query,
 }: RecommendationListProps) {
   return (
-    <div className="space-y-4">
-      <p className="text-xs font-light text-muted-foreground uppercase tracking-wide">
+    <div className="space-y-2">
+      <p className="text-xs font-light text-primary tracking-wide">
         More like{' '}
         <span className="italic normal-case font-normal">{title}</span>
       </p>
@@ -22,9 +22,9 @@ function RecommendationList({
             <li key={rec.slug}>
               <Link
                 href={`/entries/${rec.slug}?query=${encodeURIComponent(query)}`}
-                className="group flex items-center justify-between gap-3 text-muted-foreground transition-colors hover:text-accent"
+                className="group flex items-center justify-between gap-3 text-primary transition-colors hover:text-muted-foreground"
               >
-                <span className="text-sm sm:text-base group-hover:underline truncate">
+                <span className="text-sm sm:text-base truncate">
                   {rec.title}
                 </span>
                 <ArrowRight
@@ -41,7 +41,6 @@ function RecommendationList({
 }
 
 export function RecommendationsSection({
-  slug,
   title,
   query,
   queryRecommendations,
@@ -56,9 +55,9 @@ export function RecommendationsSection({
   }
 
   return (
-    <section className="mt-6 border-t border-border pt-12">
-      <div className="flex flex-col sm:flex-row justify-end items-start gap-6 sm:gap-8">
-        <div className="flex flex-col gap-6 sm:gap-8 w-full sm:w-auto sm:min-w-72">
+    <section className="mt-6 border-t border-border pt-6">
+      <div className="flex flex-col sm:flex-row justify-end items-start">
+        <div className="flex flex-col gap-2 sm:gap-4 w-full sm:w-auto sm:min-w-72">
           {hasQueryRecs && (
             <RecommendationList
               title={query}
