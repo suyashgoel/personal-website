@@ -16,12 +16,15 @@ export async function apiClient<T>(
 ): Promise<T> {
   try {
     const isFormData = options?.body instanceof FormData;
+    const hasBody = options?.body !== undefined;
 
     const response = await fetch(`${env.NEXT_PUBLIC_API_URL}${endpoint}`, {
       ...options,
       credentials: 'include',
       headers: {
-        ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
+        ...(hasBody && !isFormData
+          ? { 'Content-Type': 'application/json' }
+          : {}),
         ...options?.headers,
       },
     });
