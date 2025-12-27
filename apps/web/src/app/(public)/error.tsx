@@ -12,10 +12,12 @@ export default function Error({
   const pathname = usePathname();
 
   useEffect(() => {
-    console.error('[ERROR]', error, {
+    console.error('[ERROR] Route error boundary caught error', {
+      error,
       component: 'RouteErrorBoundary',
       digest: error.digest,
       pathname,
+      timestamp: new Date().toISOString(),
     });
   }, [error, pathname]);
 

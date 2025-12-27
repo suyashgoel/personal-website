@@ -4,7 +4,15 @@ import type { EntryPageProps } from '@/lib/types';
 import Image from 'next/image';
 import { RecommendationsSection } from './RecommendationsSection';
 
-export function EntryPageView({ slug, title, body, image }: EntryPageProps) {
+export function EntryPageView({
+  slug,
+  title,
+  body,
+  image,
+  query,
+  queryRecommendations,
+  entryRecommendations,
+}: EntryPageProps) {
   return (
     <main className="mx-auto max-w-3xl px-4 sm:px-6 py-10 space-y-6">
       <Card className="shadow-none border-0 p-0">
@@ -34,7 +42,13 @@ export function EntryPageView({ slug, title, body, image }: EntryPageProps) {
 
       <Separator />
 
-      <RecommendationsSection slug={slug} title={title} />
+      <RecommendationsSection
+        slug={slug}
+        title={title}
+        query={query}
+        queryRecommendations={queryRecommendations}
+        entryRecommendations={entryRecommendations}
+      />
     </main>
   );
 }

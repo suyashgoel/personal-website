@@ -5,31 +5,42 @@ import type React from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useTopMatch } from '@/lib/query/recommendations';
-import { searchQueryAtom } from '@/lib/state';
-import { useAtom } from 'jotai';
 import { Search } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 export function SearchCard() {
-  const [_, setSearchQuery] = useAtom(searchQueryAtom);
   const [inputValue, setInputValue] = useState('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [infoMessage, setInfoMessage] = useState<string | null>(null);
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const { mutate: searchTopMatch, isPending } = useTopMatch();
+
+  useEffect(() => {
+    if (searchParams.get('redirected') === 'true') {
+      setInfoMessage('Please search to access entries.');
+      router.replace('/search', { scroll: false });
+    }
+  }, [searchParams, router]);
+
+  useEffect(() => {
+    if (inputValue.trim()) {
+      setInfoMessage(null);
+      setErrorMessage(null);
+    }
+  }, [inputValue]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const trimmed = inputValue.trim();
     if (!trimmed) return;
 
-    setSearchQuery(trimmed);
-
     searchTopMatch(trimmed, {
       onSuccess: ({ slug }) => {
         setErrorMessage(null);
-        router.push(`/entries/${slug}`);
+        router.push(`/entries/${slug}?query=${encodeURIComponent(trimmed)}`);
       },
       onError: error => {
         console.error('[ERROR] Search top match failed', {
@@ -82,10 +93,12 @@ export function SearchCard() {
         </Button>
       </form>
 
+      {infoMessage && (
+        <p className="m-2 text-sm text-destructive">{infoMessage}</p>
+      )}
+
       {errorMessage && (
-        <p className="mt-4 text-sm text-destructive text-center">
-          {errorMessage}
-        </p>
+        <p className="m-2 text-sm text-destructive">{errorMessage}</p>
       )}
     </>
   );

@@ -1,23 +1,14 @@
-'use client';
-
-import { RecommendationsSkeleton } from '@/components/entries/RecommendationsSkeleton';
-import {
-  useRecommendationsByQuery,
-  useRecommendationsBySlug,
-} from '@/lib/query/recommendations';
-import { searchQueryAtom } from '@/lib/state';
 import {
   RecommendationListProps,
   RecommendationsSectionProps,
 } from '@/lib/types/types';
-import { useAtom } from 'jotai';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
-import { useEffect } from 'react';
 
 function RecommendationList({
   title,
   recommendations,
+  query,
 }: RecommendationListProps) {
   return (
     <div className="space-y-2">
@@ -30,7 +21,7 @@ function RecommendationList({
           {recommendations.map(rec => (
             <li key={rec.slug}>
               <Link
-                href={`/entries/${rec.slug}`}
+                href={`/entries/${rec.slug}?query=${encodeURIComponent(query)}`}
                 className="flex items-center justify-between gap-2 group py-1 px-1 -mx-1 rounded-sm transition-colors hover:bg-accent/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 <span className="text-sm group-hover:underline truncate">
@@ -52,47 +43,13 @@ function RecommendationList({
 export function RecommendationsSection({
   slug,
   title,
+  query,
+  queryRecommendations,
+  entryRecommendations,
 }: RecommendationsSectionProps) {
-  const [searchQuery] = useAtom(searchQueryAtom);
-
-  const {
-    data: entryRecommendations,
-    isLoading: entryLoading,
-    error: entryError,
-  } = useRecommendationsBySlug(slug);
-  const {
-    data: queryRecommendations,
-    isLoading: queryLoading,
-    error: queryError,
-  } = useRecommendationsByQuery(searchQuery, [slug]);
-
-  useEffect(() => {
-    if (entryError) {
-      console.error('[ERROR] Failed to fetch entry recommendations', {
-        error: entryError,
-        slug,
-      });
-    }
-  }, [entryError, slug]);
-
-  useEffect(() => {
-    if (queryError) {
-      console.error('[ERROR] Failed to fetch query recommendations', {
-        error: queryError,
-        query: searchQuery,
-      });
-    }
-  }, [queryError, searchQuery]);
-
   const hasEntryRecs = entryRecommendations && entryRecommendations.length > 0;
   const hasQueryRecs =
-    searchQuery && queryRecommendations && queryRecommendations.length > 0;
-
-  const isLoading = entryLoading || queryLoading;
-
-  if (isLoading) {
-    return <RecommendationsSkeleton />;
-  }
+    query && queryRecommendations && queryRecommendations.length > 0;
 
   if (!hasEntryRecs && !hasQueryRecs) {
     return null;
@@ -104,8 +61,9 @@ export function RecommendationsSection({
         <div className="flex flex-col gap-6 md:gap-8 w-full md:w-auto md:min-w-72">
           {hasQueryRecs && (
             <RecommendationList
-              title={searchQuery}
+              title={query}
               recommendations={queryRecommendations}
+              query={query}
             />
           )}
 
@@ -113,6 +71,7 @@ export function RecommendationsSection({
             <RecommendationList
               title={title}
               recommendations={entryRecommendations}
+              query={query}
             />
           )}
         </div>

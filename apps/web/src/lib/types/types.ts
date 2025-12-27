@@ -13,27 +13,34 @@ export interface EntryPageProps {
   title: EntryResponse['title'];
   body: EntryResponse['body'];
   image: EntryImage;
+  query: string;
+  queryRecommendations: RecommendationsResponse;
+  entryRecommendations: RecommendationsResponse;
 }
 
 export interface EntryPageParams {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ query?: string }>;
 }
 
 export interface RecommendationsSectionProps {
   slug: EntryResponse['slug'];
   title: EntryResponse['title'];
+  query: string;
+  queryRecommendations: RecommendationsResponse;
+  entryRecommendations: RecommendationsResponse;
 }
 
 export interface RecommendationListProps {
   title: string;
   recommendations: RecommendationsResponse;
+  query: string;
 }
 
 export interface ErrorMessageProps {
   error: Error | ApiError | unknown;
 }
 
-// About page component props
 export interface AboutPageProps {
   content: AboutContent;
 }
