@@ -1,5 +1,4 @@
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function EntryPageSkeleton() {
@@ -28,9 +27,7 @@ export default function EntryPageSkeleton() {
         <Skeleton className="h-5 w-9/12" />
       </section>
 
-      <Separator />
-
-      <section className="mt-12 pt-8">
+      <section className="mt-12 pt-8 border-t border-border">
         <div className="flex flex-col md:flex-row justify-end items-start gap-6 md:gap-8">
           <div className="flex flex-col gap-6 md:gap-8 w-full md:w-auto md:min-w-72">
             <div className="space-y-2">

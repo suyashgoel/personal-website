@@ -8,13 +8,13 @@ export function NavBar() {
       <nav className="mx-auto flex h-14 max-w-3xl justify-center items-center gap-8 px-4 sm:px-6 lg:px-8">
         <Link
           href="/"
-          className="text-md font-medium tracking-tight text-primary transition-colors hover:text-accent"
+          className="text-lg font-light tracking-tight text-primary transition-colors hover:text-accent"
         >
           About
         </Link>
         <Link
           href="/search"
-          className="text-md font-medium tracking-tight text-primary transition-colors hover:text-accent"
+          className="text-lg font-light tracking-tight text-primary transition-colors hover:text-accent"
         >
           Search
         </Link>

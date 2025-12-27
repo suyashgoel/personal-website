@@ -1,5 +1,3 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
 import type { EntryPageProps } from '@/lib/types';
 import Image from 'next/image';
 import { RecommendationsSection } from './RecommendationsSection';
@@ -14,33 +12,27 @@ export function EntryPageView({
   entryRecommendations,
 }: EntryPageProps) {
   return (
-    <main className="mx-auto max-w-3xl px-4 sm:px-6 py-10 space-y-6">
-      <Card className="shadow-none border-0 p-0">
-        <CardHeader className="p-0 pb-2">
-          <CardTitle className="text-2xl sm:text-3xl font-semibold">
-            {title}
-          </CardTitle>
-        </CardHeader>
-      </Card>
+    <main className="mx-auto max-w-3xl px-4 pt-6 pb-12 sm:px-6 sm:pt-8 sm:pb-16 md:pt-12 md:pb-24 lg:px-8">
+      <header className="mb-6">
+        <h1 className="mb-3 text-4xl font-light tracking-tight text-primary sm:text-5xl md:text-5xl">
+          {title}
+        </h1>
+      </header>
 
-      <Card className="overflow-hidden">
-        <CardContent className="p-0">
-          <Image
-            src={image.url}
-            alt={title}
-            className="w-full h-auto object-cover"
-            width={image.width}
-            height={image.height}
-            loading="lazy"
-          />
-        </CardContent>
-      </Card>
+      <div className="mb-6 overflow-hidden">
+        <Image
+          src={image.url}
+          alt={title}
+          className="w-full h-auto object-cover rounded-lg"
+          width={image.width}
+          height={image.height}
+          loading="lazy"
+        />
+      </div>
 
-      <section className="text-base text-muted-foreground leading-relaxed whitespace-pre-wrap">
+      <p className="text-pretty text-base font-light text-foreground/90 sm:text-lg md:text-xl whitespace-pre-wrap">
         {body}
-      </section>
-
-      <Separator />
+      </p>
 
       <RecommendationsSection
         slug={slug}

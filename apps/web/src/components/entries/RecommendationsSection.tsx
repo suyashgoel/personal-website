@@ -11,20 +11,20 @@ function RecommendationList({
   query,
 }: RecommendationListProps) {
   return (
-    <div className="space-y-2">
-      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+    <div className="space-y-4">
+      <p className="text-xs font-light text-muted-foreground uppercase tracking-wide">
         More like{' '}
         <span className="italic normal-case font-normal">{title}</span>
       </p>
       <nav>
-        <ul className="flex flex-col gap-1.5">
+        <ul className="flex flex-col gap-2">
           {recommendations.map(rec => (
             <li key={rec.slug}>
               <Link
                 href={`/entries/${rec.slug}?query=${encodeURIComponent(query)}`}
-                className="flex items-center justify-between gap-2 group py-1 px-1 -mx-1 rounded-sm transition-colors hover:bg-accent/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                className="group flex items-center justify-between gap-3 text-muted-foreground transition-colors hover:text-accent"
               >
-                <span className="text-sm group-hover:underline truncate">
+                <span className="text-sm sm:text-base group-hover:underline truncate">
                   {rec.title}
                 </span>
                 <ArrowRight
@@ -56,9 +56,9 @@ export function RecommendationsSection({
   }
 
   return (
-    <section className="mt-12 pt-8">
-      <div className="flex flex-col md:flex-row justify-end items-start gap-6 md:gap-8">
-        <div className="flex flex-col gap-6 md:gap-8 w-full md:w-auto md:min-w-72">
+    <section className="mt-6 border-t border-border pt-12">
+      <div className="flex flex-col sm:flex-row justify-end items-start gap-6 sm:gap-8">
+        <div className="flex flex-col gap-6 sm:gap-8 w-full sm:w-auto sm:min-w-72">
           {hasQueryRecs && (
             <RecommendationList
               title={query}
