@@ -27,10 +27,7 @@ function RecommendationList({
                 <span className="text-sm sm:text-base truncate">
                   {rec.title}
                 </span>
-                <ArrowRight
-                  className="w-4 h-4 flex-shrink-0 transition-transform group-hover:translate-x-0.5"
-                  aria-hidden="true"
-                />
+                <ArrowRight className="w-4 h-4 flex-shrink-0 transition-transform group-hover:translate-x-0.5" />
               </Link>
             </li>
           ))}

@@ -1,7 +1,10 @@
 'use client';
 
+import { AddButton } from '@/components/admin/AddButton';
 import { AdminNavBar } from '@/components/layout/AdminNavBar';
 import { useCurrentUser } from '@/lib/query/auth';
+import { isDialogOpenAtom } from '@/lib/state';
+import { useAtomValue } from 'jotai';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
@@ -12,6 +15,7 @@ export default function AdminLayout({
 }) {
   const { data: user, isLoading } = useCurrentUser();
   const router = useRouter();
+  const isDialogOpen = useAtomValue(isDialogOpenAtom);
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -33,7 +37,12 @@ export default function AdminLayout({
 
   return (
     <>
-      <AdminNavBar />
+      {isDialogOpen && (
+        <div className="fixed inset-0 z-[50] bg-black/40 backdrop-blur-md" />
+      )}
+
+      {!isDialogOpen && <AdminNavBar />}
+      <AddButton />
       {children}
     </>
   );

@@ -1,11 +1,10 @@
-import { AddButton } from '@/components/admin/AddButton';
+import { EntryCardList } from '@/components/admin/EntryCardList';
 
 export default function AdminPage() {
   return (
     <>
-      <AddButton />
-      <div className="flex flex-col gap-4">
-        <h1 className="text-2xl font-bold">Admin</h1>
+      <div className="container mx-auto px-4 py-8">
+        <EntryCardList />
       </div>
     </>
   );

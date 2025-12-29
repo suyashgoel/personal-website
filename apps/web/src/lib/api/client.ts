@@ -1,4 +1,4 @@
-import { env } from '../config/env';
+import { env } from '@/lib/config';
 
 export class ApiError extends Error {
   constructor(

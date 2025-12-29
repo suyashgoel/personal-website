@@ -37,6 +37,10 @@ export interface RecommendationListProps {
   query: string;
 }
 
+export interface EntryCardProps {
+  entry: EntryResponse;
+}
+
 export interface ErrorMessageProps {
   error: Error | ApiError | unknown;
 }
