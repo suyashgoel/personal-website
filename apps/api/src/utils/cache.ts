@@ -1,4 +1,4 @@
-import { redisClient } from '../clients/redis';
+import { logger, redisClient } from '../clients';
 
 const CACHE_PREFIX = 'cache:';
 
@@ -16,7 +16,8 @@ export async function get<T>(key: string): Promise<T | null> {
     }
 
     return JSON.parse(value) as T;
-  } catch (error) {
+  } catch (err) {
+    logger.error({ err, key }, 'Cache get failed, degrading gracefully');
     return null;
   }
 }
@@ -30,8 +31,8 @@ export async function set<T>(
     const cacheKey = getCacheKey(key);
     const serialized = JSON.stringify(value);
     await redisClient.setex(cacheKey, ttlSeconds, serialized);
-  } catch {
-    // Ignore error
+  } catch (err) {
+    logger.error({ err, key }, 'Cache set failed, continuing without cache');
   }
 }
 
@@ -39,8 +40,8 @@ export async function del(key: string): Promise<void> {
   try {
     const cacheKey = getCacheKey(key);
     await redisClient.del(cacheKey);
-  } catch {
-    // Ignore error
+  } catch (err) {
+    logger.error({ err, key }, 'Cache delete failed');
   }
 }
 
@@ -61,8 +62,8 @@ export async function delPattern(pattern: string): Promise<void> {
     if (keys.length > 0) {
       await redisClient.del(...keys);
     }
-  } catch {
-    // Ignore error
+  } catch (err) {
+    logger.error({ err, pattern }, 'Cache pattern delete failed');
   }
 }
 
