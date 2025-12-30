@@ -1,15 +1,21 @@
 import { buildApp } from './app';
-import { db } from './clients/db';
-import { redisClient } from './clients/redis';
+import { connectDatabase, db, redisClient } from './clients';
 import { env } from './config';
 
 const app = buildApp();
 let isShuttingDown = false;
 
-app.listen({ port: env.PORT, host: '0.0.0.0' }).catch(err => {
-  app.log.error(err);
-  process.exit(1);
-});
+async function start() {
+  try {
+    await connectDatabase();
+    await app.listen({ port: env.PORT, host: '0.0.0.0' });
+  } catch (err) {
+    app.log.error(err);
+    process.exit(1);
+  }
+}
+
+start();
 
 const shutdown = async (signal: string) => {
   if (isShuttingDown) return;
