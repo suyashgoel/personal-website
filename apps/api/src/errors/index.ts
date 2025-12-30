@@ -81,9 +81,9 @@ export class S3Error extends ServiceError {
   }
 }
 
-export class ImageMetadataError extends ServiceError {
+export class ImageProcessingError extends ServiceError {
   statusCode = 500;
   constructor() {
-    super('Failed to get image metadata');
+    super('Failed to process image');
   }
 }

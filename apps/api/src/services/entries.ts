@@ -8,7 +8,7 @@ import { db } from '../clients';
 import {
   EntryAlreadyExistsError,
   EntryNotFoundError,
-  ImageMetadataError,
+  ImageProcessingError,
 } from '../errors';
 import { ImageMetadata, UploadParams } from '../types';
 import {
@@ -49,12 +49,13 @@ export async function createEntry(entry: CreateEntry): Promise<EntryResponse> {
     throw new EntryAlreadyExistsError();
   }
 
+  let metadata: sharp.Metadata | null = null;
   let imageMetadata: ImageMetadata | null = null;
   const image = entry.image;
-
-  const metadata = await sharp(image as Buffer).metadata();
-  if (!metadata.format || !metadata.width || !metadata.height) {
-    throw new ImageMetadataError();
+  try {
+    metadata = await sharp(image as Buffer).metadata();
+  } catch (err) {
+    throw new ImageProcessingError();
   }
   const extension = metadata.format === 'jpg' ? 'jpeg' : metadata.format;
 
