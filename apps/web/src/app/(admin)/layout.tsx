@@ -1,6 +1,7 @@
 'use client';
 
 import { AddButton } from '@/components/admin/AddButton';
+import { AdminLoader } from '@/components/admin/AdminLoader';
 import { AdminNavBar } from '@/components/layout/AdminNavBar';
 import { useCurrentUser } from '@/lib/query/auth';
 import { isDialogOpenAtom } from '@/lib/state';
@@ -25,8 +26,8 @@ export default function AdminLayout({
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <p className="text-muted-foreground">Loading...</p>
+      <div className="container mx-auto px-4 py-8">
+        <AdminLoader />
       </div>
     );
   }

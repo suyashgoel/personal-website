@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -67,6 +68,9 @@ export function AddButton() {
         <DialogContent className="w-[90vw] max-w-md max-h-[90vh] p-1 flex flex-col rounded-lg">
           <DialogHeader className="px-4 pt-4">
             <DialogTitle className="text-lg">Create Entry</DialogTitle>
+            <DialogDescription className="sr-only">
+              Create a new entry with title, body, and image
+            </DialogDescription>
           </DialogHeader>
 
           <form

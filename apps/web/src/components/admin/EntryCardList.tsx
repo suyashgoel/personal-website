@@ -2,16 +2,13 @@
 
 import { EntryCard } from '@/components/admin/EntryCard';
 import { useEntries } from '@/lib/query/entries';
+import { AdminLoader } from './AdminLoader';
 
 export function EntryCardList() {
   const { data: entries, isLoading, isError, error } = useEntries();
 
   if (isLoading) {
-    return (
-      <div className="text-center py-8">
-        <p className="text-muted-foreground font-light">Loading entries...</p>
-      </div>
-    );
+    return <AdminLoader />;
   }
 
   if (isError) {
@@ -39,8 +36,8 @@ export function EntryCardList() {
     <>
       <h1 className="text-2xl mb-6 ">Entries</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {entries.map(entry => (
-          <EntryCard key={entry.id} entry={entry} />
+        {entries.map((entry, index) => (
+          <EntryCard key={entry.id} entry={entry} isAboveFold={index < 4} />
         ))}
       </div>
     </>

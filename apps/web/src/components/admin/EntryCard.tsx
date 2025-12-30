@@ -3,6 +3,7 @@ import { Card } from '@/components/ui/card';
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -18,7 +19,10 @@ import Image from 'next/image';
 import type React from 'react';
 import { useEffect, useState } from 'react';
 
-export function EntryCard({ entry }: EntryCardProps) {
+export function EntryCard({
+  entry,
+  isAboveFold,
+}: EntryCardProps & { isAboveFold: boolean }) {
   const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState(entry.title);
   const [body, setBody] = useState(entry.body);
@@ -71,6 +75,7 @@ export function EntryCard({ entry }: EntryCardProps) {
             fill
             className="object-cover"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            loading={isAboveFold ? 'eager' : 'lazy'}
           />
         </div>
       </Card>
@@ -79,6 +84,9 @@ export function EntryCard({ entry }: EntryCardProps) {
         <DialogContent className="w-[90vw] max-w-md max-h-[90vh] p-1 flex flex-col rounded-lg">
           <DialogHeader className="px-4 pt-4">
             <DialogTitle className="text-lg">Edit Entry</DialogTitle>
+            <DialogDescription className="sr-only">
+              Edit the entry with title, body, and image
+            </DialogDescription>
           </DialogHeader>
 
           <form
