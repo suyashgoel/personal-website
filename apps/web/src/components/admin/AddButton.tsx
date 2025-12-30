@@ -37,7 +37,14 @@ export function AddButton() {
       { type: 'image', title, body, image: image! },
       {
         onSuccess: () => handleOpenChange(false),
-        onError: () => setErrorMessage('Failed to create entry'),
+        onError: error => {
+          console.error('[ERROR] Create entry failed', {
+            error,
+            component: 'AddButton',
+            timestamp: new Date().toISOString(),
+          });
+          setErrorMessage('Failed to create entry');
+        },
       }
     );
   };

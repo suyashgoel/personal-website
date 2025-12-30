@@ -47,7 +47,14 @@ export function EntryCard({
       },
       {
         onSuccess: () => setIsOpen(false),
-        onError: () => setErrorMessage('Failed to update entry'),
+        onError: error => {
+          console.error('[ERROR] Edit entry failed', {
+            error,
+            component: 'EntryCard',
+            timestamp: new Date().toISOString(),
+          });
+          setErrorMessage('Failed to edit entry');
+        },
       }
     );
   };
