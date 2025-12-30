@@ -14,7 +14,7 @@ import {
   validatorCompiler,
   ZodTypeProvider,
 } from 'fastify-type-provider-zod';
-import { logger, redisClient } from './clients';
+import { db, logger, redisClient } from './clients';
 import { cookieConfig, env } from './config';
 import aboutRoutes from './routes/about';
 import authRoutes from './routes/auth';
@@ -87,6 +87,16 @@ export function buildApp(opts: FastifyServerOptions = {}) {
 
   app.get('/health', async () => {
     return { status: 'ok' };
+  });
+
+  app.get('/ready', async (request, reply) => {
+    try {
+      await Promise.all([db.$queryRaw`SELECT 1`, redisClient.ping()]);
+      return reply.code(200).send({ status: 'ready' });
+    } catch (err) {
+      request.log.error(err, 'Readiness check failed');
+      return reply.code(503).send({ status: 'not ready' });
+    }
   });
 
   app.register(authRoutes, { prefix: '/auth' });
