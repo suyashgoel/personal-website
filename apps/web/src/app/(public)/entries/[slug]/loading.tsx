@@ -7,7 +7,7 @@ export default function EntryPageSkeleton() {
         <Skeleton className="h-12 w-3/4 sm:h-14 md:h-16" />
       </header>
 
-      <div className="mb-12 overflow-hidden rounded-md border border-hairline">
+      <div className="mb-12 overflow-hidden rounded-md border-hairline">
         <Skeleton className="w-full aspect-video" />
       </div>
 

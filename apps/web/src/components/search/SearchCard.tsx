@@ -61,7 +61,7 @@ export function SearchCard() {
           Explore
         </h1>
         <p className="text-lg font-light text-foreground/60">
-          Search to explore my world
+          Start with a word.
         </p>
       </header>
 
@@ -91,11 +91,15 @@ export function SearchCard() {
       </form>
 
       {infoMessage && (
-        <p className="mt-6 text-sm font-light text-destructive">{infoMessage}</p>
+        <p className="mt-6 text-sm font-light text-destructive">
+          {infoMessage}
+        </p>
       )}
 
       {errorMessage && (
-        <p className="mt-6 text-sm font-light text-destructive">{errorMessage}</p>
+        <p className="mt-6 text-sm font-light text-destructive">
+          {errorMessage}
+        </p>
       )}
     </>
   );

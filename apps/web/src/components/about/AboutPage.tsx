@@ -25,7 +25,7 @@ export function AboutPage({ content }: AboutPageProps) {
       <div className="mb-20 text-center">
         <Link
           href="/search"
-          className="inline-flex items-center text-sm font-light tracking-tight text-foreground/60 transition-all duration-200 hover:text-foreground hover:tracking-normal"
+          className="inline-flex items-center text-lg font-light tracking-tight text-foreground/60 transition-all duration-200 hover:text-foreground hover:tracking-normal"
         >
           Explore the archives
         </Link>
@@ -64,7 +64,7 @@ export function AboutPage({ content }: AboutPageProps) {
         </div>
       </section>
 
-      <footer className="mt-20 pt-12">
+      <footer className="mt-12 pt-12">
         <p className="text-center text-xs font-light tracking-tight text-foreground/50">
           © 2025 Suyash Goel
         </p>
