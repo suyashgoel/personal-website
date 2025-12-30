@@ -16,6 +16,12 @@ module.exports = {
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
       },
+      borderWidth: {
+        hairline: '0.5px',
+      },
+      letterSpacing: {
+        tight: '-0.011em',
+      },
       colors: {
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',

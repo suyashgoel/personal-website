@@ -1,50 +1,45 @@
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function EntryPageSkeleton() {
   return (
-    <main className="mx-auto w-full max-w-3xl px-4 sm:px-6 py-10 space-y-6">
-      <Card className="shadow-none border-0 p-0">
-        <CardHeader className="p-0 pb-2">
-          <Skeleton className="h-8 w-3/4 sm:h-9" />
-        </CardHeader>
-      </Card>
+    <main className="mx-auto w-full max-w-3xl px-4 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-24 md:pt-20 md:pb-32 lg:px-8">
+      <header className="mb-12">
+        <Skeleton className="h-12 w-3/4 sm:h-14 md:h-16" />
+      </header>
 
-      <Card className="overflow-hidden shadow-none border-0">
-        <CardContent className="p-0">
-          <Skeleton className="w-full aspect-video" />
-        </CardContent>
-      </Card>
+      <div className="mb-12 overflow-hidden rounded-md border border-hairline">
+        <Skeleton className="w-full aspect-video" />
+      </div>
 
-      <section className="space-y-3">
-        <Skeleton className="h-5 w-full" />
-        <Skeleton className="h-5 w-full" />
-        <Skeleton className="h-5 w-11/12" />
-        <Skeleton className="h-5 w-full" />
-        <Skeleton className="h-5 w-full" />
-        <Skeleton className="h-5 w-4/5" />
-        <Skeleton className="h-5 w-full" />
-        <Skeleton className="h-5 w-9/12" />
+      <section className="space-y-4">
+        <Skeleton className="h-6 w-full sm:h-7" />
+        <Skeleton className="h-6 w-full sm:h-7" />
+        <Skeleton className="h-6 w-11/12 sm:h-7" />
+        <Skeleton className="h-6 w-full sm:h-7" />
+        <Skeleton className="h-6 w-full sm:h-7" />
+        <Skeleton className="h-6 w-4/5 sm:h-7" />
+        <Skeleton className="h-6 w-full sm:h-7" />
+        <Skeleton className="h-6 w-9/12 sm:h-7" />
       </section>
 
-      <section className="mt-12 pt-8 border-t border-border">
-        <div className="flex flex-col md:flex-row justify-end items-start gap-6 md:gap-8">
-          <div className="flex flex-col gap-6 md:gap-8 w-full md:w-auto md:min-w-72">
-            <div className="space-y-2">
+      <section className="mt-16 pt-12">
+        <div className="flex flex-col sm:flex-row justify-end items-start">
+          <div className="flex flex-col gap-8 w-full sm:w-auto sm:min-w-72">
+            <div className="space-y-3">
               <Skeleton className="h-3 w-32" />
-              <div className="flex flex-col gap-1.5">
-                <Skeleton className="h-6 w-full" />
-                <Skeleton className="h-6 w-full" />
-                <Skeleton className="h-6 w-11/12" />
+              <div className="flex flex-col gap-2.5">
+                <Skeleton className="h-5 w-full" />
+                <Skeleton className="h-5 w-full" />
+                <Skeleton className="h-5 w-11/12" />
               </div>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-3">
               <Skeleton className="h-3 w-28" />
-              <div className="flex flex-col gap-1.5">
-                <Skeleton className="h-6 w-full" />
-                <Skeleton className="h-6 w-full" />
-                <Skeleton className="h-6 w-10/12" />
+              <div className="flex flex-col gap-2.5">
+                <Skeleton className="h-5 w-full" />
+                <Skeleton className="h-5 w-full" />
+                <Skeleton className="h-5 w-10/12" />
               </div>
             </div>
           </div>

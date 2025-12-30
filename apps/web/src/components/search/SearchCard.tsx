@@ -56,22 +56,22 @@ export function SearchCard() {
 
   return (
     <>
-      <header className="mb-10">
-        <h1 className="mb-2 text-4xl font-light tracking-tight text-primary sm:text-5xl md:text-6xl">
+      <header className="mb-16">
+        <h1 className="mb-4 text-6xl font-light tracking-tight text-foreground leading-tight sm:text-7xl md:text-8xl">
           Explore
         </h1>
-        <p className="text-base text-muted-foreground sm:text-lg">
+        <p className="text-lg font-light text-foreground/60">
           Search to explore my world
         </p>
       </header>
 
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <form onSubmit={handleSubmit} className="space-y-6">
         <div className="relative">
-          <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/50" />
+          <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-foreground/30" />
           <Input
             type="text"
             placeholder="Ask anything..."
-            className="h-12 pl-11 pr-4 text-base font-light border-border transition-colors placeholder:text-muted-foreground/50 w-full"
+            className="h-14 pl-11 pr-4 text-lg font-light border-hairline transition-all duration-200 placeholder:text-foreground/40 w-full focus:border-foreground/30"
             value={inputValue}
             aria-label="Search"
             onChange={e => setInputValue(e.target.value)}
@@ -84,18 +84,18 @@ export function SearchCard() {
           type="submit"
           variant="outline"
           disabled={isPending || !inputValue.trim()}
-          className="w-full py-2.5 text-sm font-light tracking-tight text-primary border-border rounded-lg transition-all hover:bg-accent"
+          className="w-full h-12 text-sm font-light tracking-tight text-foreground border-hairline rounded-md transition-all duration-200 hover:bg-accent hover:border-foreground/30"
         >
           {isPending ? 'Searching...' : 'Search'}
         </Button>
       </form>
 
       {infoMessage && (
-        <p className="m-2 text-sm text-destructive">{infoMessage}</p>
+        <p className="mt-6 text-sm font-light text-destructive">{infoMessage}</p>
       )}
 
       {errorMessage && (
-        <p className="m-2 text-sm text-destructive">{errorMessage}</p>
+        <p className="mt-6 text-sm font-light text-destructive">{errorMessage}</p>
       )}
     </>
   );

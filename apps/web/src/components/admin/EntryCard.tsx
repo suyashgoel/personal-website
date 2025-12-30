@@ -72,7 +72,7 @@ export function EntryCard({
   return (
     <>
       <Card
-        className="cursor-pointer overflow-hidden transition-shadow hover:shadow-lg"
+        className="cursor-pointer overflow-hidden border-hairline transition-all duration-300 hover:border-foreground/30 hover:shadow-sm"
         onClick={() => handleOpenChange(true)}
       >
         <div className="relative aspect-video w-full">
@@ -80,7 +80,7 @@ export function EntryCard({
             src={entry.imageContent.url}
             alt={entry.title}
             fill
-            className="object-cover"
+            className="object-cover transition-transform duration-300 hover:scale-[1.02]"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             loading={isAboveFold ? 'eager' : 'lazy'}
           />
@@ -88,9 +88,11 @@ export function EntryCard({
       </Card>
 
       <Dialog open={isOpen} onOpenChange={handleOpenChange} modal={false}>
-        <DialogContent className="w-[90vw] max-w-md max-h-[90vh] p-1 flex flex-col rounded-lg">
-          <DialogHeader className="px-4 pt-4">
-            <DialogTitle className="text-lg">Edit Entry</DialogTitle>
+        <DialogContent className="w-[90vw] max-w-md max-h-[90vh] p-1 flex flex-col rounded-md border-hairline">
+          <DialogHeader className="px-5 pt-5">
+            <DialogTitle className="text-lg font-light tracking-tight">
+              Edit Entry
+            </DialogTitle>
             <DialogDescription className="sr-only">
               Edit the entry with title, body, and image
             </DialogDescription>
@@ -100,9 +102,12 @@ export function EntryCard({
             onSubmit={handleSubmit}
             className="flex flex-col flex-1 min-h-0"
           >
-            <div className="flex-1 overflow-y-auto px-4 space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="title" className="text-sm font-light">
+            <div className="flex-1 overflow-y-auto px-5 space-y-5">
+              <div className="space-y-2.5">
+                <Label
+                  htmlFor="title"
+                  className="text-sm font-light tracking-tight text-foreground/70"
+                >
                   Title
                 </Label>
                 <Input
@@ -111,13 +116,16 @@ export function EntryCard({
                   onChange={e => setTitle(e.target.value)}
                   disabled={isPending}
                   placeholder="Entry title"
-                  className="text-sm font-light"
+                  className="text-sm font-light border-hairline"
                   required
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="body" className="text-sm font-light">
+              <div className="space-y-2.5">
+                <Label
+                  htmlFor="body"
+                  className="text-sm font-light tracking-tight text-foreground/70"
+                >
                   Body
                 </Label>
                 <Textarea
@@ -126,19 +134,21 @@ export function EntryCard({
                   onChange={e => setBody(e.target.value)}
                   disabled={isPending}
                   placeholder="Entry body"
-                  className="min-h-[140px] resize-none text-sm font-light"
+                  className="min-h-[140px] resize-none text-sm font-light border-hairline"
                   required
                 />
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-2.5">
                 <details className="group">
-                  <summary className="list-none cursor-pointer flex items-center gap-1 text-sm font-light text-muted-foreground hover:text-foreground transition">
+                  <summary className="list-none cursor-pointer flex items-center gap-1.5 text-sm font-light tracking-tight text-foreground/60 hover:text-foreground transition-colors duration-200">
                     <span>Image</span>
-                    <span className="transition group-open:rotate-90">▸</span>
+                    <span className="transition-transform duration-200 group-open:rotate-90">
+                      ▸
+                    </span>
                   </summary>
 
-                  <div className="mt-3 relative aspect-video w-full overflow-hidden rounded-md border">
+                  <div className="mt-3 relative aspect-video w-full overflow-hidden rounded-md border-hairline">
                     <Image
                       src={entry.imageContent.url}
                       alt={entry.title}
@@ -150,16 +160,18 @@ export function EntryCard({
               </div>
 
               {errorMessage && (
-                <p className="text-sm text-destructive">{errorMessage}</p>
+                <p className="text-sm font-light text-destructive">
+                  {errorMessage}
+                </p>
               )}
             </div>
 
-            <DialogFooter className="mt-2 px-4 py-3">
+            <DialogFooter className="mt-3 px-5 py-4">
               <Button
                 type="submit"
                 variant="outline"
                 disabled={isPending}
-                className="w-full sm:w-auto"
+                className="w-full sm:w-auto text-sm font-light border-hairline"
               >
                 {isPending ? 'Updating...' : 'Update'}
               </Button>

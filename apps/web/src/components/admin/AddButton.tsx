@@ -65,16 +65,18 @@ export function AddButton() {
       <Button
         variant="outline"
         size="icon"
-        className="fixed bottom-8 left-8 h-14 w-14 rounded-full"
+        className="fixed bottom-8 left-8 h-14 w-14 rounded-full border-hairline transition-all duration-300 hover:border-foreground/30 hover:shadow-md"
         onClick={() => handleOpenChange(true)}
       >
         <Plus className="h-5 w-5" />
       </Button>
 
       <Dialog open={isOpen} onOpenChange={handleOpenChange} modal={false}>
-        <DialogContent className="w-[90vw] max-w-md max-h-[90vh] p-1 flex flex-col rounded-lg">
-          <DialogHeader className="px-4 pt-4">
-            <DialogTitle className="text-lg">Create Entry</DialogTitle>
+        <DialogContent className="w-[90vw] max-w-md max-h-[90vh] p-1 flex flex-col rounded-md border-hairline">
+          <DialogHeader className="px-5 pt-5">
+            <DialogTitle className="text-lg font-light tracking-tight">
+              Create Entry
+            </DialogTitle>
             <DialogDescription className="sr-only">
               Create a new entry with title, body, and image
             </DialogDescription>
@@ -84,9 +86,12 @@ export function AddButton() {
             onSubmit={handleSubmit}
             className="flex flex-col flex-1 min-h-0"
           >
-            <div className="flex-1 overflow-y-auto px-4 space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="title" className="text-sm font-light">
+            <div className="flex-1 overflow-y-auto px-5 space-y-5">
+              <div className="space-y-2.5">
+                <Label
+                  htmlFor="title"
+                  className="text-sm font-light tracking-tight text-foreground/70"
+                >
                   Title
                 </Label>
                 <Input
@@ -95,13 +100,16 @@ export function AddButton() {
                   onChange={e => setTitle(e.target.value)}
                   disabled={isPending}
                   placeholder="Entry title"
-                  className="font-light text-sm"
+                  className="text-sm font-light border-hairline"
                   required
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="body" className="text-sm font-light">
+              <div className="space-y-2.5">
+                <Label
+                  htmlFor="body"
+                  className="text-sm font-light tracking-tight text-foreground/70"
+                >
                   Body
                 </Label>
                 <Textarea
@@ -109,14 +117,17 @@ export function AddButton() {
                   value={body}
                   onChange={e => setBody(e.target.value)}
                   disabled={isPending}
-                  className="min-h-[140px] resize-none font-light text-sm"
+                  className="min-h-[140px] resize-none text-sm font-light border-hairline"
                   placeholder="Entry body"
                   required
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="image" className="text-sm font-light">
+              <div className="space-y-2.5">
+                <Label
+                  htmlFor="image"
+                  className="text-sm font-light tracking-tight text-foreground/70"
+                >
                   Image
                 </Label>
                 <Input
@@ -125,21 +136,24 @@ export function AddButton() {
                   accept="image/*"
                   onChange={e => setImage(e.target.files?.[0] || null)}
                   disabled={isPending}
+                  className="text-sm font-light border-hairline"
                   required
                 />
               </div>
 
               {errorMessage && (
-                <p className="text-sm text-destructive">{errorMessage}</p>
+                <p className="text-sm font-light text-destructive">
+                  {errorMessage}
+                </p>
               )}
             </div>
 
-            <DialogFooter className="mt-2 px-4 py-3">
+            <DialogFooter className="mt-3 px-5 py-4">
               <Button
                 type="submit"
                 variant="outline"
                 disabled={isPending}
-                className="w-full sm:w-auto"
+                className="w-full sm:w-auto text-sm font-light border-hairline"
               >
                 {isPending ? 'Publishing...' : 'Publish'}
               </Button>

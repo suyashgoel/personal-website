@@ -39,21 +39,21 @@ export function LoginForm() {
 
   return (
     <>
-      <header className="mb-10">
-        <h1 className="mb-2 text-5xl font-light tracking-tight text-primary md:text-6xl">
+      <header className="mb-16">
+        <h1 className="mb-4 text-6xl font-light tracking-tight text-foreground leading-tight md:text-7xl">
           Sign in
         </h1>
-        <p className="text-base text-muted-foreground sm:text-lg">
+        <p className="text-lg font-light text-foreground/60">
           Access the admin panel
         </p>
       </header>
 
-      <form onSubmit={handleSubmit} className="space-y-5">
-        <div className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="space-y-5">
           <Input
             type="email"
             placeholder="Email"
-            className="h-12 px-4 text-base font-light border-border transition-colors placeholder:text-muted-foreground/50 w-full"
+            className="h-14 px-4 text-lg font-light border-hairline transition-all duration-200 placeholder:text-foreground/40 w-full focus:border-foreground/30"
             value={email}
             onChange={e => setEmail(e.target.value)}
             disabled={isPending}
@@ -64,7 +64,7 @@ export function LoginForm() {
           <Input
             type="password"
             placeholder="Password"
-            className="h-12 px-4 text-base font-light border-border transition-colors placeholder:text-muted-foreground/50 w-full"
+            className="h-14 px-4 text-lg font-light border-hairline transition-all duration-200 placeholder:text-foreground/40 w-full focus:border-foreground/30"
             value={password}
             onChange={e => setPassword(e.target.value)}
             disabled={isPending}
@@ -76,14 +76,14 @@ export function LoginForm() {
           type="submit"
           variant="outline"
           disabled={isPending}
-          className="w-full py-2.5 text-sm font-light tracking-tight text-primary border-border rounded-lg transition-all hover:bg-accent"
+          className="w-full h-12 text-sm font-light tracking-tight text-foreground border-hairline rounded-md transition-all duration-200 hover:bg-accent hover:border-foreground/30"
         >
           {isPending ? 'Signing in...' : 'Sign in'}
         </Button>
       </form>
 
       {errorMessage && (
-        <p className="m-2 text-sm text-destructive">{errorMessage}</p>
+        <p className="mt-6 text-sm font-light text-destructive">{errorMessage}</p>
       )}
     </>
   );
