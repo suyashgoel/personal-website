@@ -5,7 +5,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'suyash-personal-website-dev.s3.us-east-2.amazonaws.com',
+        hostname: 'suyash-personal-website.s3.us-east-2.amazonaws.com',
       },
     ],
   },
