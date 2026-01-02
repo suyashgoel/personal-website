@@ -83,7 +83,9 @@ export function LoginForm() {
       </form>
 
       {errorMessage && (
-        <p className="mt-6 text-sm font-light text-destructive">{errorMessage}</p>
+        <p className="mt-6 text-sm font-light text-destructive">
+          {errorMessage}
+        </p>
       )}
     </>
   );

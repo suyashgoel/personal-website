@@ -34,7 +34,9 @@ export function EntryCardList() {
 
   return (
     <>
-      <h1 className="text-3xl font-light tracking-tight text-foreground mb-8">Entries</h1>
+      <h1 className="text-3xl font-light tracking-tight text-foreground mb-8">
+        Entries
+      </h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {entries.map((entry, index) => (
           <EntryCard key={entry.id} entry={entry} isAboveFold={index < 4} />
