@@ -4,6 +4,8 @@ import { ApiError } from '@/lib/api/client';
 import type { EntryImage, EntryPageParams } from '@/lib/types';
 import { notFound, redirect } from 'next/navigation';
 
+export const dynamic = 'force-dynamic';
+
 export default async function EntryPage({
   params,
   searchParams,
