@@ -10,36 +10,34 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 export function SearchCard() {
-  const [inputValue, setInputValue] = useState('');
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [infoMessage, setInfoMessage] = useState<string | null>(null);
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  const isRedirected = searchParams.get('redirected') === 'true';
+  const [inputValue, setInputValue] = useState('');
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [infoMessage, setInfoMessage] = useState<string | null>(
+    isRedirected ? 'Please search to access entries.' : null
+  );
 
   const { mutate: searchTopMatch, isPending } = useTopMatch();
 
   useEffect(() => {
-    if (searchParams.get('redirected') === 'true') {
-      setInfoMessage('Please search to access entries.');
+    if (isRedirected) {
       router.replace('/search', { scroll: false });
     }
-  }, [searchParams, router]);
-
-  useEffect(() => {
-    if (inputValue.trim()) {
-      setInfoMessage(null);
-      setErrorMessage(null);
-    }
-  }, [inputValue]);
+  }, [isRedirected, router]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const trimmed = inputValue.trim();
     if (!trimmed) return;
 
+    setInfoMessage(null);
+    setErrorMessage(null);
+
     searchTopMatch(trimmed, {
       onSuccess: ({ slug }) => {
-        setErrorMessage(null);
         router.push(`/entries/${slug}?query=${encodeURIComponent(trimmed)}`);
       },
       onError: error => {
@@ -52,6 +50,14 @@ export function SearchCard() {
         setErrorMessage('Search failed. Please try again.');
       },
     });
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+    if (e.target.value.trim()) {
+      setInfoMessage(null);
+      setErrorMessage(null);
+    }
   };
 
   return (
@@ -74,7 +80,7 @@ export function SearchCard() {
             className="h-14 pl-11 pr-4 text-lg font-light border-hairline transition-all duration-200 placeholder:text-foreground/40 w-full focus:border-foreground/30"
             value={inputValue}
             aria-label="Search"
-            onChange={e => setInputValue(e.target.value)}
+            onChange={handleInputChange}
             disabled={isPending}
             autoFocus
           />
