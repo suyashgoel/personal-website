@@ -1,14 +1,17 @@
 import { PrismaClient } from '@prisma/client';
+import { env } from '../src/config';
 import { hashPassword } from '../src/utils';
 
 const prisma = new PrismaClient();
 
+const { ADMIN_EMAIL, ADMIN_PASSWORD } = env;
+
 async function main() {
-  const email = 'suyash@gmail.com';
-  const password = 'password';
+  const email = ADMIN_EMAIL;
+  const password = ADMIN_PASSWORD;
   const hashedPassword = await hashPassword(password);
 
-  await prisma.user.upsert({
+  const user = await prisma.user.upsert({
     where: { email },
     update: {},
     create: {
@@ -19,7 +22,7 @@ async function main() {
     },
   });
 
-  console.log('Admin user created!');
+  console.log(`Admin user ready: ${user.email}`);
 }
 
 main()

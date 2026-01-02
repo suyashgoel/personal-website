@@ -83,7 +83,10 @@ export class S3Error extends ServiceError {
 
 export class ImageProcessingError extends ServiceError {
   statusCode = 500;
-  constructor() {
+  constructor(cause?: unknown) {
     super('Failed to process image');
+    if (cause) {
+      this.cause = cause;
+    }
   }
 }

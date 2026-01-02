@@ -55,7 +55,7 @@ export async function createEntry(entry: CreateEntry): Promise<EntryResponse> {
   try {
     metadata = await sharp(image as Buffer).metadata();
   } catch (err) {
-    throw new ImageProcessingError();
+    throw new ImageProcessingError(err);
   }
   const extension = metadata.format === 'jpg' ? 'jpeg' : metadata.format;
 

@@ -60,7 +60,13 @@ export default async function recommendationsRoutes(fastify: FastifyInstance) {
           return reply.status(err.statusCode).send({ error: err.message });
         }
         if (err instanceof ServiceError) {
-          request.log.error(err);
+          request.log.error(
+            {
+              err: err,
+              cause: err.cause,
+            },
+            err.message
+          );
           return reply.status(err.statusCode).send({ error: err.message });
         }
         request.log.error(err);
@@ -94,7 +100,13 @@ export default async function recommendationsRoutes(fastify: FastifyInstance) {
           return reply.status(err.statusCode).send({ error: err.message });
         }
         if (err instanceof ServiceError) {
-          request.log.error(err);
+          request.log.error(
+            {
+              err: err,
+              cause: err.cause,
+            },
+            err.message
+          );
           return reply.status(err.statusCode).send({ error: err.message });
         }
         request.log.error(err);
