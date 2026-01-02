@@ -70,7 +70,7 @@ export async function login(user: LoginRequest): Promise<UserResponse> {
     throw new InvalidCredentialsError();
   }
 
-  const { hashedPassword, ...userResponse } = existingUser;
+  const { hashedPassword: _, ...userResponse } = existingUser;
 
   return userResponse;
 }
