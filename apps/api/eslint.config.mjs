@@ -1,28 +1,38 @@
+import { defineConfig } from 'eslint/config';
+import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
-export default tseslint.config(
+const eslintConfig = defineConfig([
+  {
+    ignores: ['dist/**', 'node_modules/**'],
+  },
+
   {
     files: ['src/**/*.ts'],
     languageOptions: {
+      parser: tseslint.parser,
       ecmaVersion: 2022,
       sourceType: 'module',
       globals: {
-        process: 'readonly',
-        __dirname: 'readonly',
-        __filename: 'readonly',
-        Buffer: 'readonly',
-        console: 'readonly',
+        ...globals.node,
       },
     },
   },
-  tseslint.configs.recommended,
+
   {
+    files: ['src/**/*.ts'],
+    plugins: {
+      '@typescript-eslint': tseslint.plugin,
+    },
     rules: {
+      ...tseslint.configs.recommended.rules,
       '@typescript-eslint/no-unused-vars': [
         'error',
         { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
       ],
       '@typescript-eslint/no-explicit-any': 'warn',
     },
-  }
-);
+  },
+]);
+
+export default eslintConfig;
