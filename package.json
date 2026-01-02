@@ -6,10 +6,9 @@
     "dev": "pnpm --filter \"./apps/*\" --parallel run dev",
     "build": "pnpm -r run build",
     "lint": "pnpm -r run lint",
-    "db:up": "docker-compose up -d",
-    "db:down": "docker-compose down",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
-    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\""
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "typecheck": "pnpm --filter api typecheck && pnpm --filter web typecheck"
   },
   "devDependencies": {
     "@types/node": "^22.19.1",
