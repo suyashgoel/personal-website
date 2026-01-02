@@ -1,0 +1,32 @@
+# Dependencies
+node_modules
+**/node_modules
+
+# Build outputs
+dist
+build
+.next
+out
+
+# Cache and temp files
+.turbo
+.cache
+*.tsbuildinfo
+
+# IDE
+.vscode
+.idea
+.claude
+
+# Logs
+*.log
+
+# Lock files
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# Generated files
+.next
+apps/web/.next
+apps/api/dist
