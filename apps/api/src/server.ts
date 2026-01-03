@@ -6,9 +6,19 @@ const app = buildApp();
 let isShuttingDown = false;
 
 async function start() {
+  const port = env.PORT;
+
   try {
-    await connectDatabase();
-    await app.listen({ port: env.PORT, host: '0.0.0.0' });
+    await app.listen({
+      port,
+      host: '0.0.0.0',
+    });
+
+    app.log.info(`API listening on ${port}`);
+
+    connectDatabase().catch(err => {
+      app.log.error(err, 'Database connection failed');
+    });
   } catch (err) {
     app.log.error(err);
     process.exit(1);
