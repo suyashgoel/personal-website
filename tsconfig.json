@@ -12,10 +12,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "incremental": true,
-    "paths": {
-      "@personal-website/shared": ["./packages/shared/dist/index.d.ts"]
-    }
+    "incremental": true
   },
   "exclude": ["node_modules"]
 }
