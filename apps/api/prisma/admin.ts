@@ -3,15 +3,14 @@ import { hashPassword } from '../src/utils';
 
 const prisma = new PrismaClient();
 
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL!;
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD!;
-
-if (!ADMIN_EMAIL || !ADMIN_PASSWORD) {
-  console.error('ADMIN_EMAIL and ADMIN_PASSWORD must be set');
-  process.exit(1);
-}
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
 async function main() {
+  if (!ADMIN_EMAIL || !ADMIN_PASSWORD) {
+    console.error('ADMIN_EMAIL and ADMIN_PASSWORD must be set');
+    process.exit(1);
+  }
   const hashedPassword = await hashPassword(ADMIN_PASSWORD);
 
   const user = await prisma.user.upsert({
