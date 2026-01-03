@@ -19,7 +19,7 @@ export function EntryPageView({
         </h1>
       </header>
 
-      <div className="mb-12 overflow-hidden rounded-md border border-hairline">
+      <div className="mb-12 overflow-hidden rounded-md border-hairline">
         <Image
           src={image.url}
           alt={title}
