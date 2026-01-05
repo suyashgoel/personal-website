@@ -15,7 +15,7 @@ import {
   ZodTypeProvider,
 } from 'fastify-type-provider-zod';
 import { logger, redisClient } from './clients';
-import { cookieConfig, env } from './config';
+import { env } from './config';
 import aboutRoutes from './routes/about';
 import authRoutes from './routes/auth';
 import entriesRoutes from './routes/entries';
@@ -47,7 +47,10 @@ export function buildApp(opts: FastifyServerOptions = {}) {
 
   app.register(jwt, {
     secret: env.JWT_SECRET,
-    cookie: cookieConfig,
+    cookie: {
+      cookieName: 'session',
+      signed: true,
+    },
     sign: {
       expiresIn: '7d',
     },
