@@ -39,7 +39,7 @@ export function buildApp(opts: FastifyServerOptions = {}) {
 
   app.register(multipart, {
     attachFieldsToBody: 'keyValues',
-    limits: { fileSize: 1024 * 1024 * 10 }, // 10MB
+    limits: { fileSize: 1024 * 1024 * 25 }, // 25MB
   });
 
   app.register(cookie, {
