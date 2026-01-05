@@ -26,6 +26,7 @@ export function buildApp(opts: FastifyServerOptions = {}) {
   const app = Fastify({
     ...opts,
     loggerInstance: logger as FastifyBaseLogger,
+    trustProxy: true,
   }).withTypeProvider<ZodTypeProvider>();
 
   app.setValidatorCompiler(validatorCompiler);
