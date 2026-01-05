@@ -7,7 +7,7 @@ export const cookieConfig = {
   cookieName: 'session', // Name of the cookie
   httpOnly: true, // Prevents the cookie from being accessed by JavaScript
   secure: env.NODE_ENV === 'production', // Only send cookie over HTTPS in production
-  sameSite: 'lax', // Prevents the cookie from being sent with cross-site requests
+  sameSite: env.NODE_ENV === 'production' ? 'none' : 'lax',
   signed: true, // Signs the cookie to prevent tampering
   maxAge: SEVEN_DAYS_MS, // 7 days
 } as const;
