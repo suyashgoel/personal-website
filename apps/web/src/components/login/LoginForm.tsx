@@ -3,26 +3,44 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useLogin } from '@/lib/query/auth';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import type React from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export function LoginForm() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const isUnauthorized = searchParams.get('unauthorized') === 'true';
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const router = useRouter();
+  const [infoMessage, setInfoMessage] = useState<string | null>(
+    isUnauthorized ? 'Log in to access the admin panel' : null
+  );
 
   const { mutate: login, isPending } = useLogin();
 
+  useEffect(() => {
+    if (isUnauthorized) {
+      router.replace('/login', { scroll: false });
+    }
+  }, [isUnauthorized, router]);
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    setInfoMessage(null);
     setErrorMessage(null);
 
     login(
       { email, password },
       {
-        onSuccess: () => {
+        onSuccess: user => {
+          if (!user) {
+            setErrorMessage('Invalid email or password');
+            return;
+          }
           router.push('/admin');
         },
         onError: error => {
@@ -31,10 +49,25 @@ export function LoginForm() {
             component: 'LoginForm',
             timestamp: new Date().toISOString(),
           });
-          setErrorMessage('Invalid email or password');
         },
       }
     );
+  };
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+    if (e.target.value.trim()) {
+      setInfoMessage(null);
+      setErrorMessage(null);
+    }
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+    if (e.target.value.trim()) {
+      setInfoMessage(null);
+      setErrorMessage(null);
+    }
   };
 
   return (
@@ -55,7 +88,7 @@ export function LoginForm() {
             placeholder="Email"
             className="h-14 px-4 text-lg font-light border-hairline transition-all duration-200 placeholder:text-foreground/40 w-full focus:border-foreground/30"
             value={email}
-            onChange={e => setEmail(e.target.value)}
+            onChange={handleEmailChange}
             disabled={isPending}
             autoFocus
             required
@@ -66,7 +99,7 @@ export function LoginForm() {
             placeholder="Password"
             className="h-14 px-4 text-lg font-light border-hairline transition-all duration-200 placeholder:text-foreground/40 w-full focus:border-foreground/30"
             value={password}
-            onChange={e => setPassword(e.target.value)}
+            onChange={handlePasswordChange}
             disabled={isPending}
             required
           />
@@ -81,6 +114,12 @@ export function LoginForm() {
           {isPending ? 'Signing in...' : 'Sign in'}
         </Button>
       </form>
+
+      {infoMessage && (
+        <p className="mt-6 text-sm font-light text-destructive">
+          {infoMessage}
+        </p>
+      )}
 
       {errorMessage && (
         <p className="mt-6 text-sm font-light text-destructive">

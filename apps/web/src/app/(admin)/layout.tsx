@@ -20,7 +20,7 @@ export default function AdminLayout({
 
   useEffect(() => {
     if (!isLoading && !user) {
-      router.push('/login');
+      router.push('/login?unauthorized=true');
     }
   }, [user, isLoading, router]);
 

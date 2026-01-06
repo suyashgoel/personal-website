@@ -12,10 +12,15 @@ export const authApi = {
       body: JSON.stringify(data),
     }),
 
-  login: (data: LoginRequest): Promise<UserResponse> =>
+  login: (data: LoginRequest): Promise<UserResponse | null> =>
     apiClient<UserResponse>('/auth/login', {
       method: 'POST',
       body: JSON.stringify(data),
+    }).catch(error => {
+      if (error.statusCode === 401) {
+        return null;
+      }
+      throw error;
     }),
 
   logout: (): Promise<null> =>
