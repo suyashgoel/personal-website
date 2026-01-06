@@ -71,7 +71,7 @@ export function SearchCard() {
   return (
     <>
       <header className="mb-16">
-        <h1 className="mb-4 text-6xl font-light tracking-tight text-foreground leading-tight sm:text-7xl md:text-8xl">
+        <h1 className="mb-4 text-5xl font-light tracking-tight text-foreground leading-tight sm:text-6xl md:text-7xl">
           Explore
         </h1>
         <p className="text-lg font-light text-foreground/60">
@@ -85,7 +85,7 @@ export function SearchCard() {
           <Input
             type="text"
             placeholder="Ask anything..."
-            className="h-14 pl-11 pr-4 text-lg font-light border-hairline transition-all duration-200 placeholder:text-foreground/40 w-full focus:border-foreground/30"
+            className="h-14 pl-11 pr-4 text-lg font-light border-hairline transition-all duration-200 placeholder:text-foreground/40 w-full focus:border-foreground/30 rounded-md"
             value={inputValue}
             aria-label="Search"
             onChange={handleInputChange}
