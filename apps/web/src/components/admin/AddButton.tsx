@@ -65,7 +65,7 @@ export function AddButton() {
       <Button
         variant="outline"
         size="icon"
-        className="fixed bottom-8 left-8 h-14 w-14 rounded-full border-hairline transition-all duration-300 hover:border-foreground/30 hover:shadow-md"
+        className="fixed bottom-8 left-8 z-[60] h-14 w-14 rounded-full border-hairline transition-all duration-300 hover:border-foreground/30 hover:shadow-md"
         onClick={() => handleOpenChange(true)}
       >
         <Plus className="h-5 w-5" />
