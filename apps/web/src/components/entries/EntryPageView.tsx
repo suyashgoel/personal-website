@@ -19,11 +19,11 @@ export function EntryPageView({
         </h1>
       </header>
 
-      <div className="mb-8 overflow-hidden rounded-md border-hairline">
+      <div className="mb-8 overflow-hidden rounded-md border-hairline aspect-[4/3]">
         <Image
           src={image.url}
           alt={title}
-          className="w-full h-auto object-cover"
+          className="w-full h-full object-cover"
           width={image.width}
           height={image.height}
           priority

@@ -8,7 +8,7 @@ export default function EntryPageSkeleton() {
       </header>
 
       <div className="mb-8 overflow-hidden rounded-md border-hairline">
-        <Skeleton className="w-full aspect-video" />
+        <Skeleton className="w-full aspect-[4/3]" />
       </div>
 
       <section className="space-y-3">

@@ -49,26 +49,29 @@ export async function createEntry(entry: CreateEntry): Promise<EntryResponse> {
     throw new EntryAlreadyExistsError();
   }
 
-  let metadata: sharp.Metadata | null = null;
   let imageMetadata: ImageMetadata | null = null;
+  let compressedImage: Buffer | null = null;
   const image = entry.image;
   try {
-    metadata = await sharp(image as Buffer).metadata();
+    compressedImage = await sharp(image as Buffer)
+      .resize(1920, null, { fit: 'inside', withoutEnlargement: true })
+      .jpeg({ quality: 85 })
+      .toBuffer();
   } catch (err) {
     throw new ImageProcessingError(err);
   }
-  const extension = metadata.format === 'jpg' ? 'jpeg' : metadata.format;
 
   const uploadParams: UploadParams = {
-    key: `${slug}.${extension}`,
-    body: image as Buffer,
-    contentType: `image/${extension}`,
+    key: `${slug}.jpeg`,
+    body: compressedImage,
+    contentType: `image/jpeg`,
   };
   await uploadFile(uploadParams);
 
+  const compressedMetadata = await sharp(compressedImage).metadata();
   imageMetadata = {
-    width: metadata.width,
-    height: metadata.height,
+    width: compressedMetadata.width,
+    height: compressedMetadata.height,
     key: uploadParams.key,
   };
 
