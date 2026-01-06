@@ -46,7 +46,10 @@ export function EntryCard({
         entry: { title, body },
       },
       {
-        onSuccess: () => setIsOpen(false),
+        onSuccess: () => {
+          setIsOpen(false);
+          setIsDialogOpen(false);
+        },
         onError: error => {
           console.error('[ERROR] Edit entry failed', {
             error,
