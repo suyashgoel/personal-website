@@ -25,7 +25,10 @@ export default async function entriesRoutes(fastify: FastifyInstance) {
     {
       preHandler: [fastify.authenticate, fastify.authorize],
       config: {
-        rateLimit: false,
+        rateLimit: {
+          max: 5,
+          timeWindow: '1 minute',
+        },
       },
       schema: {
         body: createEntrySchema,
@@ -113,7 +116,10 @@ export default async function entriesRoutes(fastify: FastifyInstance) {
     {
       preHandler: [fastify.authenticate, fastify.authorize],
       config: {
-        rateLimit: false,
+        rateLimit: {
+          max: 3,
+          timeWindow: '1 minute',
+        },
       },
       schema: {
         params: entryParamsSchema,
@@ -152,7 +158,10 @@ export default async function entriesRoutes(fastify: FastifyInstance) {
     {
       preHandler: [fastify.authenticate, fastify.authorize],
       config: {
-        rateLimit: false,
+        rateLimit: {
+          max: 5,
+          timeWindow: '1 minute',
+        },
       },
       schema: {
         params: entryParamsSchema,

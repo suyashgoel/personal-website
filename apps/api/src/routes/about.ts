@@ -6,6 +6,9 @@ export default async function aboutRoutes(fastify: FastifyInstance) {
   fastify.get(
     '/',
     {
+      config: {
+        rateLimit: false,
+      },
       schema: {
         response: {
           200: aboutContentSchema,
@@ -29,7 +32,10 @@ export default async function aboutRoutes(fastify: FastifyInstance) {
     {
       preHandler: [fastify.authenticate, fastify.authorize],
       config: {
-        rateLimit: false,
+        rateLimit: {
+          max: 5,
+          timeWindow: '1 minute',
+        },
       },
       schema: {
         body: aboutContentSchema,

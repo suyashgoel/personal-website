@@ -50,7 +50,7 @@ export default async function authRoutes(fastify: FastifyInstance) {
     '/login',
     {
       config: {
-        rateLimit: { max: 5, timeWindow: '1 minute' },
+        rateLimit: { max: 5, timeWindow: '10 minutes' },
       },
       schema: {
         body: loginRequestSchema,
@@ -100,9 +100,6 @@ export default async function authRoutes(fastify: FastifyInstance) {
     '/me',
     {
       preHandler: fastify.authenticate,
-      config: {
-        rateLimit: false,
-      },
       schema: {
         response: {
           200: userResponseSchema,
