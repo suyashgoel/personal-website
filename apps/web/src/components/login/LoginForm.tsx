@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { ApiError } from '@/lib/api';
 import { useLogin } from '@/lib/query/auth';
 import { useRouter, useSearchParams } from 'next/navigation';
 import type React from 'react';
@@ -44,6 +45,10 @@ export function LoginForm() {
           router.push('/admin');
         },
         onError: error => {
+          if (error instanceof ApiError && error.statusCode === 429) {
+            setInfoMessage('Rate limited. Please try again later.');
+            return;
+          }
           console.error('[ERROR] Login failed', {
             error,
             component: 'LoginForm',
