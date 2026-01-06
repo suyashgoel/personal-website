@@ -14,10 +14,15 @@ export function SearchCard() {
   const searchParams = useSearchParams();
 
   const isRedirected = searchParams.get('redirected') === 'true';
+  const isRateLimited = searchParams.get('rateLimited') === 'true';
   const [inputValue, setInputValue] = useState('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [infoMessage, setInfoMessage] = useState<string | null>(
-    isRedirected ? 'Please search to access entries.' : null
+    isRedirected
+      ? 'Please search to access entries.'
+      : isRateLimited
+        ? 'Rate limited. Please try again later.'
+        : null
   );
 
   const { mutate: searchTopMatch, isPending } = useTopMatch();
@@ -26,7 +31,10 @@ export function SearchCard() {
     if (isRedirected) {
       router.replace('/search', { scroll: false });
     }
-  }, [isRedirected, router]);
+    if (isRateLimited) {
+      router.replace('/search', { scroll: false });
+    }
+  }, [isRedirected, isRateLimited, router]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

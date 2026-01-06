@@ -27,6 +27,9 @@ export default async function EntryPage({
 
     const [queryRecommendations, entryRecommendations] = await Promise.all([
       recommendationsApi.getByQuery(query, [slug]).catch(error => {
+        if (error instanceof ApiError && error.statusCode === 429) {
+          throw error;
+        }
         console.error('[ERROR] Failed to fetch query recommendations', {
           error,
           component: 'EntryPage',
@@ -37,6 +40,9 @@ export default async function EntryPage({
         return [];
       }),
       recommendationsApi.getBySlug(slug).catch(error => {
+        if (error instanceof ApiError && error.statusCode === 429) {
+          throw error;
+        }
         console.error('[ERROR] Failed to fetch entry recommendations', {
           error,
           component: 'EntryPage',
@@ -67,6 +73,9 @@ export default async function EntryPage({
   } catch (error) {
     if (error instanceof ApiError && error.statusCode === 404) {
       notFound();
+    }
+    if (error instanceof ApiError && error.statusCode === 429) {
+      redirect('/search?rateLimited=true');
     }
 
     throw error;
