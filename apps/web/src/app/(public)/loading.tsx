@@ -2,7 +2,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 export default function AboutPageSkeleton() {
   return (
-    <main className="mx-auto w-full max-w-3xl px-4 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-24 md:pt-20 md:pb-32 lg:px-8">
+    <div className="mx-auto w-full max-w-3xl px-4 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-24 md:pt-20 md:pb-32 lg:px-8">
       <header className="mb-20">
         <Skeleton className="h-14 w-64 sm:h-16" />
       </header>
@@ -41,6 +41,6 @@ export default function AboutPageSkeleton() {
       <footer className="mt-20 pt-12">
         <Skeleton className="mx-auto h-3 w-44" />
       </footer>
-    </main>
+    </div>
   );
 }

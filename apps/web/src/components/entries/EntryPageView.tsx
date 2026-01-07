@@ -12,7 +12,7 @@ export function EntryPageView({
   entryRecommendations,
 }: EntryPageProps) {
   return (
-    <main className="mx-auto max-w-3xl px-4 pt-6 pb-8 sm:px-6 sm:pt-8 sm:pb-10 md:pt-10 lg:px-8">
+    <div className="mx-auto max-w-3xl px-4 pt-6 pb-8 sm:px-6 sm:pt-8 sm:pb-10 md:pt-10 lg:px-8">
       <header className="mb-8">
         <h1 className="text-3xl font-light tracking-tight leading-tight text-foreground sm:text-4xl md:text-5xl">
           {title}
@@ -42,6 +42,6 @@ export function EntryPageView({
         queryRecommendations={queryRecommendations}
         entryRecommendations={entryRecommendations}
       />
-    </main>
+    </div>
   );
 }

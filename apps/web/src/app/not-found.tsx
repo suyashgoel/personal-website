@@ -3,7 +3,7 @@ import Link from 'next/link';
 export default function NotFound() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
-      <main className="mx-auto max-w-3xl px-4 pt-6 pb-12 sm:px-6 sm:pt-8 sm:pb-16 md:pt-12 md:pb-24 lg:px-8">
+      <div className="mx-auto max-w-3xl px-4 pt-6 pb-12 sm:px-6 sm:pt-8 sm:pb-16 md:pt-12 md:pb-24 lg:px-8">
         <header className="mb-12 text-center">
           <h1 className="mb-3 text-4xl font-light tracking-tight text-primary sm:text-5xl md:text-5xl">
             Page not found
@@ -21,7 +21,7 @@ export default function NotFound() {
             Return to search
           </Link>
         </div>
-      </main>
+      </div>
     </div>
   );
 }

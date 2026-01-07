@@ -2,7 +2,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 export default function EntryPageSkeleton() {
   return (
-    <main className="mx-auto w-full max-w-3xl px-4 pt-6 pb-8 sm:px-6 sm:pt-8 sm:pb-10 lg:px-8">
+    <div className="mx-auto w-full max-w-3xl px-4 pt-6 pb-8 sm:px-6 sm:pt-8 sm:pb-10 lg:px-8">
       <header className="mb-8 w-full">
         <Skeleton className="h-8 w-3/4 sm:h-10 md:h-12" />
       </header>
@@ -45,6 +45,6 @@ export default function EntryPageSkeleton() {
           </div>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 export function AboutPage({ content }: AboutPageProps) {
   return (
-    <main className="mx-auto max-w-3xl px-4 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-24 md:pt-20 md:pb-32 lg:px-8">
+    <div className="mx-auto max-w-3xl px-4 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-24 md:pt-20 md:pb-32 lg:px-8">
       <header className="mb-20">
         <h1 className="text-6xl font-light tracking-tight text-foreground leading-tight sm:text-7xl">
           Suyash Goel
@@ -69,6 +69,6 @@ export function AboutPage({ content }: AboutPageProps) {
           © 2025 Suyash Goel
         </p>
       </footer>
-    </main>
+    </div>
   );
 }
