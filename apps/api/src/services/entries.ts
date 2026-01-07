@@ -107,9 +107,7 @@ export async function createEntry(entry: CreateEntry): Promise<EntryResponse> {
       });
     });
 
-    await set(CACHE_KEYS.entry(result!.slug), result, ENTRY_SINGLE_TTL);
     await invalidateEntryCaches();
-
     return result as EntryResponse;
   } catch (err) {
     if (imageMetadata) {
@@ -246,8 +244,6 @@ export async function updateEntry(
     })!;
   });
 
-  await set(CACHE_KEYS.entry(slug), result, ENTRY_SINGLE_TTL);
-  await invalidateEntryCaches();
-
+  await invalidateEntryCaches(slug);
   return result as EntryResponse;
 }
