@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Backend API for Personal Website",
   "main": "src/server.ts",
+  "type": "commonjs",
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
@@ -15,7 +16,6 @@
     "db:generate": "prisma generate",
     "db:studio": "prisma studio",
     "db:seed:admin": "tsx prisma/admin.ts",
-    "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .ts"
   },
   "dependencies": {
