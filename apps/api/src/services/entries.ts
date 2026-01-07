@@ -1,4 +1,4 @@
-import {
+import type {
   CreateEntry,
   EntryResponse,
   UpdateEntry,
@@ -10,7 +10,7 @@ import {
   EntryNotFoundError,
   ImageProcessingError,
 } from '../errors';
-import { ImageMetadata, UploadParams } from '../types';
+import type { ImageMetadata, UploadParams } from '../types';
 import {
   deleteFile,
   generateEmbedding,

@@ -1,4 +1,4 @@
-import { EntryResponse, RecommendationItem } from '@personal-website/shared';
+import type { EntryResponse, RecommendationItem } from '@personal-website/shared';
 import { db } from '../clients';
 import { EntryNotFoundError } from '../errors';
 import { CACHE_KEYS, generateEmbedding, get, set, slugify } from '../utils';

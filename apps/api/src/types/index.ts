@@ -1,4 +1,4 @@
-import { Role } from '@personal-website/shared';
+import type { Role } from '@personal-website/shared';
 
 export type JWTPayload = {
   sub: number;

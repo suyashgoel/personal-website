@@ -3,16 +3,18 @@ import cors from '@fastify/cors';
 import jwt from '@fastify/jwt';
 import multipart from '@fastify/multipart';
 import rateLimit from '@fastify/rate-limit';
-import Fastify, {
+import type {
   FastifyBaseLogger,
   FastifyReply,
   FastifyRequest,
   FastifyServerOptions,
 } from 'fastify';
+import Fastify from 'fastify';
+import type {
+  ZodTypeProvider} from 'fastify-type-provider-zod';
 import {
   serializerCompiler,
-  validatorCompiler,
-  ZodTypeProvider,
+  validatorCompiler
 } from 'fastify-type-provider-zod';
 import { logger, redisClient } from './clients';
 import { env } from './config';
@@ -20,7 +22,7 @@ import aboutRoutes from './routes/about';
 import authRoutes from './routes/auth';
 import entriesRoutes from './routes/entries';
 import recommendationsRoutes from './routes/recommendations';
-import { JWTPayload } from './types';
+import type { JWTPayload } from './types';
 
 export function buildApp(opts: FastifyServerOptions = {}) {
   const app = Fastify({

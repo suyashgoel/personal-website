@@ -1,12 +1,13 @@
+import type {
+  RecommendationsParams,
+  TopMatchParams} from '@personal-website/shared';
 import {
   entryResponseSchema,
-  RecommendationsParams,
   recommendationsParamsSchema,
   recommendationsResponseSchema,
-  TopMatchParams,
   topMatchParamsSchema,
 } from '@personal-website/shared';
-import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
+import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { ServiceError, UserError } from '../errors';
 import {
   getRecommendationsByQuery,

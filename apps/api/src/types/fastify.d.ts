@@ -1,4 +1,4 @@
-import { JWTPayload } from './index';
+import type { JWTPayload } from './index';
 
 declare module 'fastify' {
   interface FastifyInstance {

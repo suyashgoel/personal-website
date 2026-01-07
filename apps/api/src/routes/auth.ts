@@ -1,15 +1,16 @@
-import {
+import type {
   LoginRequest,
+  RegisterRequest} from '@personal-website/shared';
+import {
   loginRequestSchema,
-  RegisterRequest,
   registerRequestSchema,
   userResponseSchema,
 } from '@personal-website/shared';
-import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
+import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { clearCookieConfig, cookieConfig } from '../config';
 import { UserError } from '../errors';
 import { getCurrentUser, login, register } from '../services/auth';
-import { JWTPayload } from '../types';
+import type { JWTPayload } from '../types';
 
 export default async function authRoutes(fastify: FastifyInstance) {
   fastify.post(

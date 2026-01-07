@@ -1,15 +1,16 @@
-import {
+import type {
   CreateEntry,
+  EntryParams,
+  UpdateEntry} from '@personal-website/shared';
+import {
   createEntrySchema,
   entriesResponseSchema,
-  EntryParams,
   entryParamsSchema,
   entryResponseSchema,
   nullResponseSchema,
-  UpdateEntry,
   updateEntrySchema,
 } from '@personal-website/shared';
-import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
+import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { ServiceError, UserError } from '../errors';
 import {
   createEntry,

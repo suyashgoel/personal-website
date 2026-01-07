@@ -1,4 +1,4 @@
-import { AboutContent } from '@personal-website/shared';
+import type { AboutContent } from '@personal-website/shared';
 import { db } from '../clients';
 import { CACHE_KEYS, get, set } from '../utils/cache';
 

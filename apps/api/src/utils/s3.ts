@@ -2,7 +2,7 @@ import { DeleteObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
 import { s3Client } from '../clients';
 import { env } from '../config';
 import { S3Error } from '../errors';
-import { UploadParams } from '../types';
+import type { UploadParams } from '../types';
 
 export async function uploadFile(params: UploadParams): Promise<void> {
   try {
