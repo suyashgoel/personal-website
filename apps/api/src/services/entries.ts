@@ -218,6 +218,7 @@ export async function updateEntry(
       data: {
         title: newTitle,
         body: newBody,
+        slug: slugify(newTitle),
       },
     });
 
