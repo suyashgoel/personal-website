@@ -1,174 +1,329 @@
-# Suyash's Website
+# Personal Website
 
-A production-ready personal platform that is a living archive of who I am. Static about page paired with a dynamic semantic knowledge graph of my thoughts powered by embeddings.
+A semantic knowledge graph of my thoughts, powered by AI embeddings. Search through ideas and explore connections through natural language.
 
----
-
-## Stack
-
-| Component      | Technology                                       |
-| -------------- | ------------------------------------------------ |
-| Frontend       | Next.js 15, React 19, TailwindCSS, Framer Motion |
-| Backend        | Fastify, TypeScript, Zod                         |
-| Database       | PostgreSQL 16 with pgvector                      |
-| Search         | Embeddings + full-text search                    |
-| Caching        | Redis                                            |
-| Infrastructure | Docker, GitHub Actions, AWS                      |
+**🔗 Live Site**: [suyashgoel.com](https://suyashgoel.com)
 
 ---
 
-## Core Features
+## Overview
 
-**About Page**
+This is my personal website featuring a dynamic knowledge graph built on vector similarity search. Users can search through my entries using natural language queries and navigate through related content via dual recommendation systems.
 
-- Static, beautifully designed intro with background, experience and interests
+**Key Features:**
 
-**Admin Panel**
+- **Semantic Search**: Natural language queries powered by OpenAI embeddings (3072-dimensional vectors)
+- **Knowledge Graph Navigation**: Dual recommendations—entries similar to your query and entries similar to current content
+- **Vector Similarity**: PostgreSQL with pgvector extension for fast cosine similarity search
+- **Intelligent Caching**: Redis-backed caching with pattern-based invalidation
+- **Admin Panel**: Protected content management system with JWT authentication
 
-- Custom JWT-based authentication
-- Protected interface to create and edit entries
+---
 
-**Knowledge Graph Navigation**
+## Tech Stack
 
-- Search page where you enter a query
-- Query takes you to the single most relevant entry
-- At the bottom of each entry, two types of recommendations:
-  - **Related to your query** - More entries matching your original search intent
-  - **Related to this entry** - Entries semantically similar to what you're currently reading
-- Click any recommendation to dive deeper, creating a choose-your-own-adventure through my thoughts
-- Public access to navigate and explore
+**Frontend**
+
+- Next.js 15 (App Router)
+- React 19
+- TypeScript
+- TailwindCSS
+- Jotai (state management)
+- React Query (data fetching)
+
+**Backend**
+
+- Fastify
+- PostgreSQL 16 with pgvector
+- Redis
+- OpenAI Embeddings API
+- Prisma ORM
+- TypeScript
+
+**Infrastructure**
+
+- Vercel (frontend)
+- Render (backend)
+- AWS S3 (image storage)
+- Docker (local development)
 
 ---
 
 ## Architecture
 
-**Deployment:**
+### Semantic Search Flow
 
-- Dockerized application
-- AWS with RDS PostgreSQL, ElastiCache Redis
-- Load balancer in front, secrets managed securely
+1. User submits natural language query
+2. Generate embedding vector using OpenAI's `text-embedding-3-large`
+3. Perform cosine similarity search against stored entry embeddings in PostgreSQL
+4. Return top match and related recommendations
 
-**Application:**
+### Dual Recommendation System
 
-- Separate frontend and backend (decoupled)
-- Frontend calls backend API for all dynamic data
-- Backend handles entries, auth, recommendations, embeddings, and caching
+Each entry displays two types of recommendations:
 
----
+- **Query-based**: Entries similar to the user's original search intent
+- **Content-based**: Entries semantically similar to the current entry
 
-## Authentication
+This creates a "choose your own adventure" navigation through the knowledge graph.
 
-- Custom JWT-based auth
-- Admin login page with email/password
-- Protected admin routes for creating/editing entries
-- JWT stored securely in httpOnly cookies
+### Caching Strategy
 
----
+- Entry embeddings: 24 hour TTL
+- Query results: 15 minute TTL
+- Recommendations: 15 minute TTL
+- Pattern-based invalidation on content updates
 
-## Data Model
+### Security
 
-Entries with flexible content based on type. For example:
-
-- **Song** (Spotify link, why it matters)
-- **Photo** (image URL, context)
-- **Writing** (text content, optional time period)
-- **Podcast** (link, episode, your take)
-- **Book** (title, author, your thoughts)
-- **Place** (location, coordinates, why)
-- **Thought** (just text)
-
-Each entry gets an embedding vector for semantic search stored in PostgreSQL with pgvector.
+- JWT authentication with httpOnly signed cookies
+- bcrypt password hashing (12 rounds)
+- Redis-backed rate limiting
+- Zod schema validation across the stack
+- CORS configured for credentials
 
 ---
 
-## API Design
+## Project Structure
 
-**Auth endpoints** for login/logout/verification
-
-**Entry endpoints** for CRUD operations (admin protected for writes, public for reads)
-
-**Query endpoint** - Takes natural language query, returns best matching entry
-
-**Recommendation endpoints:**
-
-- Get entries related to original query context
-- Get entries related to current entry
-
-**About endpoint** for static profile data
-
----
-
-## Navigation Strategy
-
-**How it works:**
-
-- User enters query on search page
-- Backend finds single best matching entry using hybrid search (semantic + full-text)
-- Entry displays with two recommendation sections at bottom:
-  - Entries similar to the original query (stay on theme)
-  - Entries similar to current content (explore connections)
-- Each click leads to new entry with its own dual recommendations
-- Creates wandering exploration paths through the knowledge graph
+```
+personal-website/
+├── apps/
+│   ├── api/              # Fastify backend
+│   │   ├── src/
+│   │   │   ├── routes/      # API endpoints
+│   │   │   ├── services/    # Business logic
+│   │   │   ├── clients/     # DB, Redis, OpenAI, S3
+│   │   │   └── utils/       # Helpers, caching
+│   │   └── prisma/          # Schema & migrations
+│   └── web/              # Next.js frontend
+│       └── src/
+│           ├── app/         # Routes (App Router)
+│           │   ├── (public)/   # Public pages
+│           │   └── (admin)/    # Protected admin
+│           ├── components/  # React components
+│           └── lib/         # API client, hooks
+└── packages/
+    └── shared/           # Zod schemas & types
+```
 
 ---
 
-## Embeddings Strategy
+## Local Development
 
-- Generate embedding once when entry is created or updated
-- Store embedding vector in PostgreSQL (pgvector column)
-- Cache embeddings in Redis for fast access
-- Invalidate cache only when entry is updated
-- Embedding model TBD (Cohere or OpenAI)
+### Prerequisites
+
+- Node.js 20+
+- pnpm 10.17.0+
+- Docker & Docker Compose
+- OpenAI API key
+- AWS S3 bucket (for image storage)
+
+### Setup
+
+**1. Clone and install dependencies**
+
+```bash
+git clone https://github.com/suyashgoel/personal-website.git
+cd personal-website
+pnpm install
+```
+
+**2. Start infrastructure services**
+
+```bash
+cd apps/api
+pnpm db:up
+```
+
+This starts PostgreSQL (with pgvector) and Redis via Docker Compose.
+
+**3. Configure environment variables**
+
+**Backend** (`apps/api/.env`):
+
+```bash
+# Copy example file
+cp .env.example .env
+
+# Configure required variables:
+NODE_ENV=development
+PORT=8080
+LOG_LEVEL=debug
+
+# Database (uses docker-compose values)
+DATABASE_URL=postgresql://admin:password@localhost:5432/suyash_db
+
+# Redis (uses docker-compose values)
+REDIS_URL=redis://localhost:6379
+
+# Authentication (generate secure random strings)
+JWT_SECRET=your-secret-at-least-32-characters-long
+COOKIE_SECRET=your-secret-at-least-32-characters-long
+
+# OpenAI
+OPENAI_KEY=sk-your-openai-api-key
+
+# AWS S3
+AWS_REGION=us-east-2
+AWS_ACCESS_KEY_ID=your-access-key
+AWS_SECRET_ACCESS_KEY=your-secret-key
+S3_BUCKET_NAME=your-bucket-name
+
+# URLs
+FRONTEND_URL=http://localhost:3000
+
+# Admin user (for seeding)
+ADMIN_EMAIL=admin@example.com
+ADMIN_PASSWORD=secure-password
+```
+
+**Frontend** (`apps/web/.env.local`):
+
+```bash
+# Copy example file
+cp .env.local.example .env.local
+
+# Configure API URL
+NEXT_PUBLIC_API_URL=http://localhost:8080
+```
+
+**4. Run database migrations**
+
+```bash
+cd apps/api
+pnpm db:migrate
+```
+
+**5. Seed admin user**
+
+```bash
+pnpm db:seed:admin
+```
+
+**6. Start development servers**
+
+```bash
+# From project root
+pnpm dev
+```
+
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:8080
+- API Health: http://localhost:8080/health
 
 ---
 
-## Caching Strategy
+## API Endpoints
 
-**What gets cached:**
+### Public
 
-- Query-to-entry mappings (query → best entry)
-- Related entries for each entry (precomputed similar entries)
-- Query-based recommendations for common queries
-- Entry embeddings for fast similarity calculations
-- Frequently read entries
+- `GET /health` - Health check
+- `GET /entries` - List all entries
+- `GET /entries/:slug` - Get entry by slug
+- `GET /recommendations?query=...` - Query-based recommendations
+- `GET /recommendations?slug=...&excludeSlugs=...` - Entry-based recommendations
+- `GET /about` - Get about page content
 
-**Invalidation approach:**
+### Authentication
 
-- Entries rarely change after creation, so longer TTLs are fine
-- Invalidate specific caches on entry updates/deletes
-- Start simple with TTL-based expiration, optimize later
+- `POST /auth/register` - Register new user
+- `POST /auth/login` - Login
+- `POST /auth/logout` - Logout
+- `GET /auth/me` - Get current user
 
----
+### Protected (Admin only)
 
-## Rate Limiting
-
-**Key routes to protect:**
-
-- Query endpoint (prevent embedding API abuse)
-- Recommendation endpoints (reasonable limits)
-- Login endpoint (prevent brute force)
-- Public read endpoints (reasonable limits)
-
-**Implementation:**
-
-- Redis-based counters with appropriate time windows
-- Return 429 when limits exceeded
-- Admin routes have higher/no limits
+- `POST /entries` - Create entry with image upload
+- `PUT /entries/:slug` - Update entry
+- `DELETE /entries/:slug` - Delete entry
 
 ---
 
-## Implementation Roadmap
+## Development Commands
 
-1. **Backend foundation** - Set up Fastify, PostgreSQL with pgvector, migrations
-2. **Auth system** - JWT generation, login flow, protected route middleware
-3. **Entry CRUD** - Basic create/read/update/delete with auth guards
-4. **Embeddings** - Generate and store on write, set up caching
-5. **Query & Recommendations** - Implement query-to-entry and dual recommendation logic
-6. **Caching layer** - Add Redis caching for queries and recommendations
-7. **Rate limiting** - Implement Redis-based rate limiting
-8. **Frontend: About** - Build static landing page
-9. **Frontend: Admin** - Build login and entry management UI
-10. **Frontend: Knowledge Graph** - Build query input and dual recommendation navigation
-11. **Dockerize** - Create containers and docker-compose setup
-12. **CI/CD** - Set up GitHub Actions pipeline
-13. **Deploy to AWS** - Configure ECS/EC2, RDS, ElastiCache, load balancing
+```bash
+# Root workspace
+pnpm dev          # Start all apps in parallel
+pnpm build        # Build all packages
+pnpm lint         # Lint all packages
+pnpm format       # Format code with Prettier
+pnpm format:check # Check formatting
+
+# API-specific (from apps/api)
+pnpm dev          # Start API in watch mode
+pnpm build        # Build for production
+pnpm start        # Run production build
+pnpm db:up        # Start Docker services
+pnpm db:down      # Stop Docker services
+pnpm db:migrate   # Run migrations
+pnpm db:studio    # Open Prisma Studio
+pnpm db:seed:admin # Seed admin user
+
+# Web-specific (from apps/web)
+pnpm dev          # Start Next.js dev server
+pnpm build        # Build for production
+pnpm start        # Run production build
+```
+
+---
+
+## Deployment
+
+**Frontend**: Deployed on Vercel with automatic deployments from `main` branch
+
+**Backend**: Deployed on Render with managed PostgreSQL and Redis instances
+
+**Environment Configuration**: All production environment variables are set via hosting platform dashboards
+
+---
+
+## Technical Highlights
+
+### Monorepo Architecture
+
+- Workspace managed with pnpm
+- Shared TypeScript types and Zod schemas
+- Consistent tooling across frontend and backend
+
+### Type Safety
+
+- End-to-end type safety with TypeScript
+- Zod schemas shared between client and server
+- Fastify type provider for validated routes
+- Prisma for type-safe database queries
+
+### Performance
+
+- React Query for optimized data fetching
+- Redis caching with smart invalidation
+- PostgreSQL indexes on vector columns
+- Next.js App Router with Server Components
+
+### Developer Experience
+
+- Hot reload in development
+- Docker Compose for local services
+- Prisma Studio for database exploration
+- ESLint + Prettier for code consistency
+- GitHub Actions CI pipeline
+
+---
+
+## License
+
+MIT
+
+---
+
+## Contact
+
+Built by Suyash Goel
+
+- Website: [suyashgoel.com](https://suyashgoel.com)
+- GitHub: [suyashgoel](https://github.com/suyashgoel)
+- LinkedIn: [suyash-goel](https://linkedin.com/in/suyash-goel/)
+
+---
+
+**Questions or feedback?** Feel free to reach out via the contact information on my website.
