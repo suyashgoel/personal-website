@@ -11,7 +11,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { useUpdateEntry } from '@/lib/query/entries';
+import { useDeleteEntry, useUpdateEntry } from '@/lib/query/entries';
 import { isDialogOpenAtom } from '@/lib/state';
 import { EntryCardProps } from '@/lib/types/types';
 import { useAtom } from 'jotai';
@@ -29,7 +29,10 @@ export function EntryCard({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [, setIsDialogOpen] = useAtom(isDialogOpenAtom);
 
-  const { mutate: updateEntry, isPending } = useUpdateEntry();
+  const { mutate: updateEntry, isPending: isUpdating } = useUpdateEntry();
+  const { mutate: deleteEntry, isPending: isDeleting } = useDeleteEntry();
+
+  const isPending = isUpdating || isDeleting;
 
   useEffect(() => {
     setTitle(entry.title);
@@ -60,6 +63,25 @@ export function EntryCard({
         },
       }
     );
+  };
+
+  const handleDelete = () => {
+    if (!confirm('Are you sure you want to delete this entry?')) return;
+    setErrorMessage(null);
+    deleteEntry(entry.slug, {
+      onSuccess: () => {
+        setIsOpen(false);
+        setIsDialogOpen(false);
+      },
+      onError: error => {
+        console.error('[ERROR] Delete entry failed', {
+          error,
+          component: 'EntryCard',
+          timestamp: new Date().toISOString(),
+        });
+        setErrorMessage('Failed to delete entry');
+      },
+    });
   };
 
   const handleOpenChange = (open: boolean) => {
@@ -171,12 +193,21 @@ export function EntryCard({
 
             <DialogFooter className="mt-3 px-5 py-4">
               <Button
+                type="button"
+                onClick={handleDelete}
+                variant="destructive"
+                disabled={isPending}
+                className="w-full sm:w-auto text-sm font-light border-hairline"
+              >
+                {isDeleting ? 'Deleting...' : 'Delete'}
+              </Button>
+              <Button
                 type="submit"
                 variant="outline"
                 disabled={isPending}
                 className="w-full sm:w-auto text-sm font-light border-hairline"
               >
-                {isPending ? 'Updating...' : 'Update'}
+                {isUpdating ? 'Updating...' : 'Update'}
               </Button>
             </DialogFooter>
           </form>
