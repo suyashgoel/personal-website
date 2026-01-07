@@ -1,6 +1,18 @@
+# env
 .env
 !.env.example
-node_modules
-dist
+
+# dependencies
+**/node_modules/
+
+# builds
+**/dist/
+.next/
+out/
+
+# typescript
 tsconfig.tsbuildinfo
+
+# editor / OS
 .vscode
+.DS_Store

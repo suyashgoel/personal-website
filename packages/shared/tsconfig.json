@@ -1,14 +1,12 @@
 {
   "compilerOptions": {
-    "outDir": "dist",
     "rootDir": "src",
-    "module": "CommonJS",
-    "target": "ES2020",
+    "outDir": "dist",
+    "target": "ES2022",
+    "module": "ESNext",
     "declaration": true,
     "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "moduleResolution": "node"
+    "moduleResolution": "bundler"
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist"]

@@ -1,9 +1,8 @@
 # Dependencies
-node_modules
-**/node_modules
+**/node_modules/
 
 # Build outputs
-dist
+**/dist/
 build
 .next
 out
@@ -15,8 +14,6 @@ out
 
 # IDE
 .vscode
-.idea
-.claude
 
 # Logs
 *.log
@@ -24,9 +21,6 @@ out
 # Lock files
 pnpm-lock.yaml
 package-lock.json
-yarn.lock
 
-# Generated files
-.next
-apps/web/.next
-apps/api/dist
+# OS
+.DS_Store
