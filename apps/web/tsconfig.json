@@ -1,15 +1,8 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "target": "ES2022",
     "lib": ["dom", "dom.iterable", "esnext"],
     "baseUrl": ".",
-    "noEmit": true,
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "jsx": "preserve",
-    "incremental": true,
     "plugins": [
       {
         "name": "next"
@@ -17,7 +10,7 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
-      "@personal-website/shared": ["../../packages/shared"]
+      "@personal-website/shared": ["../../packages/shared/dist"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
