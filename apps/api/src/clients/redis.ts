@@ -13,6 +13,10 @@ redisClient.on('error', err => {
   logger.error({ err }, 'Redis connection error');
 });
 
+redisClient.on('reconnecting', () => {
+  logger.warn('Redis reconnecting');
+});
+
 redisClient.on('ready', () => {
   logger.info('Redis ready');
 });
