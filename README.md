@@ -16,6 +16,7 @@ This is my personal website featuring a dynamic knowledge graph built on vector 
 - **Knowledge Graph Navigation**: Dual recommendations—entries similar to your query and entries similar to current content
 - **Vector Similarity**: PostgreSQL with pgvector extension for fast cosine similarity search
 - **Intelligent Caching**: Redis-backed caching with pattern-based invalidation
+- **Image Optimization**: Automatic server-side compression (PNG→JPEG, resize, quality optimization)
 - **Admin Panel**: Protected content management system with JWT authentication
 
 ---
@@ -24,7 +25,7 @@ This is my personal website featuring a dynamic knowledge graph built on vector 
 
 **Frontend**
 
-- Next.js 15 (App Router)
+- Next.js 16 (App Router)
 - React 19
 - TypeScript
 - TailwindCSS
@@ -38,6 +39,7 @@ This is my personal website featuring a dynamic knowledge graph built on vector 
 - Redis
 - OpenAI Embeddings API
 - Prisma ORM
+- Sharp (image processing)
 - TypeScript
 
 **Infrastructure**
@@ -69,18 +71,38 @@ This creates a "choose your own adventure" navigation through the knowledge grap
 
 ### Caching Strategy
 
-- Entry embeddings: 24 hour TTL
-- Query results: 15 minute TTL
-- Recommendations: 15 minute TTL
-- Pattern-based invalidation on content updates
+Redis-backed caching with pattern-based invalidation:
+
+- **Query embeddings**: 24 hours (OpenAI embeddings for search queries)
+- **Recommendations**: 15 minutes (both query-based and content-based)
+- **Entry list**: 30 minutes (all entries index)
+- **Single entry**: 1 hour (individual entry data)
+- **About page**: 1 hour (about content)
+- **Pattern-based invalidation**: Automatic cache clearing on content updates
 
 ### Security
 
-- JWT authentication with httpOnly signed cookies
-- bcrypt password hashing (12 rounds)
-- Redis-backed rate limiting
-- Zod schema validation across the stack
-- CORS configured for credentials
+- **JWT authentication**: httpOnly signed cookies with 7-day expiration
+- **Password hashing**: bcrypt with 12 rounds
+- **Rate limiting**: Redis-backed IP-based rate limiting
+  - Global: 60 requests/minute per IP
+  - Auth endpoints (login/register): 5 requests per 10 minutes
+  - Search/recommendations: 10 requests/minute
+  - Admin mutations (create/update): 5 requests/minute
+  - Admin deletions: 3 requests/minute
+- **Validation**: Zod schema validation across the entire stack
+- **CORS**: Configured for credentials with frontend origin whitelist
+
+### Image Optimization
+
+Images are automatically optimized on upload:
+
+- **Format conversion**: PNG → JPEG for photos (preserves quality, reduces size)
+- **Resizing**: Maximum 1920px width (maintains aspect ratio)
+- **Compression**: JPEG quality 85 (optimal balance of quality vs size)
+- **Storage**: AWS S3 for reliable cloud storage
+- **Typical savings**: 90-98% file size reduction
+- **Client delivery**: Next.js Image component with automatic WebP conversion
 
 ---
 
