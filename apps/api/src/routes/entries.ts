@@ -1,7 +1,8 @@
 import type {
   CreateEntry,
   EntryParams,
-  UpdateEntry} from '@personal-website/shared';
+  UpdateEntry,
+} from '@personal-website/shared';
 import {
   createEntrySchema,
   entriesResponseSchema,

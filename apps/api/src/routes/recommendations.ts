@@ -1,6 +1,7 @@
 import type {
   RecommendationsParams,
-  TopMatchParams} from '@personal-website/shared';
+  TopMatchParams,
+} from '@personal-website/shared';
 import {
   entryResponseSchema,
   recommendationsParamsSchema,

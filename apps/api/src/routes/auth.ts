@@ -1,6 +1,4 @@
-import type {
-  LoginRequest,
-  RegisterRequest} from '@personal-website/shared';
+import type { LoginRequest, RegisterRequest } from '@personal-website/shared';
 import {
   loginRequestSchema,
   registerRequestSchema,

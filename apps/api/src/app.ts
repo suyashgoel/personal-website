@@ -10,11 +10,10 @@ import type {
   FastifyServerOptions,
 } from 'fastify';
 import Fastify from 'fastify';
-import type {
-  ZodTypeProvider} from 'fastify-type-provider-zod';
+import type { ZodTypeProvider } from 'fastify-type-provider-zod';
 import {
   serializerCompiler,
-  validatorCompiler
+  validatorCompiler,
 } from 'fastify-type-provider-zod';
 import { logger, redisClient } from './clients';
 import { env } from './config';

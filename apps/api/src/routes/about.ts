@@ -1,4 +1,4 @@
-import type { AboutContent} from '@personal-website/shared';
+import type { AboutContent } from '@personal-website/shared';
 import { aboutContentSchema } from '@personal-website/shared';
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { getAboutContent, updateAboutContent } from '../services/about';
