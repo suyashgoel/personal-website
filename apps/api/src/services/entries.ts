@@ -205,6 +205,16 @@ export async function updateEntry(
     return existingEntry;
   }
 
+  const newSlug = slugify(newTitle);
+  if (newSlug !== slug) {
+    const conflictingEntry = await db.entry.findUnique({
+      where: { slug: newSlug },
+    });
+    if (conflictingEntry) {
+      throw new EntryAlreadyExistsError();
+    }
+  }
+
   let newEmbedding: number[] | null = null;
   if (updatedData.title || updatedData.body) {
     const content = `${newTitle}\n${newBody}`
@@ -218,7 +228,7 @@ export async function updateEntry(
       data: {
         title: newTitle,
         body: newBody,
-        slug: slugify(newTitle),
+        slug: newSlug,
       },
     });
 
