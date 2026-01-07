@@ -4,6 +4,7 @@
     "outDir": "dist",
     "module": "CommonJS",
     "moduleResolution": "node",
+    "noEmit": false,
     "lib": ["es2022"],
     "types": ["node"]
   },
