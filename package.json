@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "pnpm --filter \"./apps/*\" --parallel run dev",
+    "dev": "pnpm --filter @personal-website/shared build && pnpm --filter \"./apps/*\" run dev",
     "build": "pnpm -r run build",
     "lint": "pnpm -r run lint",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
