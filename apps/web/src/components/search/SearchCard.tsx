@@ -40,6 +40,10 @@ export function SearchCard() {
     e.preventDefault();
     const trimmed = inputValue.trim();
     if (!trimmed) return;
+    if (trimmed.length > 200) {
+      setErrorMessage('Query must be less than 200 characters.');
+      return;
+    }
 
     setInfoMessage(null);
     setErrorMessage(null);

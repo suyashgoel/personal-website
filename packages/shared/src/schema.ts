@@ -79,7 +79,7 @@ export const recommendationItemSchema = z.object({
 
 export const recommendationsParamsSchema = z
   .object({
-    query: z.string().min(1).optional(),
+    query: z.string().min(1).max(200).optional(),
     slug: z.string().min(1).optional(),
     excludeSlugs: z
       .union([z.string().min(1), z.array(z.string().min(1))])
@@ -90,7 +90,7 @@ export const recommendationsParamsSchema = z
 export const recommendationsResponseSchema = z.array(recommendationItemSchema);
 
 export const topMatchParamsSchema = z.object({
-  query: z.string().min(1),
+  query: z.string().min(1).max(200),
 });
 
 // Common Schemas

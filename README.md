@@ -87,7 +87,7 @@ Redis-backed caching with pattern-based invalidation:
 - **Rate limiting**: Redis-backed IP-based rate limiting
   - Global: 60 requests/minute per IP
   - Auth endpoints (login/register): 5 requests per 10 minutes
-  - Search/recommendations: 10 requests/minute
+  - Search/recommendations: 30 entry pages/minute
   - Admin mutations (create/update): 5 requests/minute
   - Admin deletions: 3 requests/minute
 - **Validation**: Zod schema validation across the entire stack

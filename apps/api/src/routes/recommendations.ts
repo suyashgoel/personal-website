@@ -22,7 +22,7 @@ export default async function recommendationsRoutes(fastify: FastifyInstance) {
     {
       config: {
         rateLimit: {
-          max: 10,
+          max: 60,
           timeWindow: '1 minute',
         },
       },
@@ -81,7 +81,7 @@ export default async function recommendationsRoutes(fastify: FastifyInstance) {
     '/top-match/:query',
     {
       config: {
-        rateLimit: { max: 10, timeWindow: '1 minute' },
+        rateLimit: { max: 30, timeWindow: '1 minute' },
       },
       schema: {
         params: topMatchParamsSchema,
