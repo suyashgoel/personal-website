@@ -34,7 +34,8 @@ export const useUpdateEntry = () => {
   return useMutation({
     mutationFn: ({ slug, entry }: { slug: string; entry: UpdateEntry }) =>
       entriesApi.update(slug, entry),
-    onSuccess: entry => {
+    onSuccess: (entry, { slug: oldSlug }) => {
+      queryClient.removeQueries({ queryKey: ['entry', oldSlug] });
       queryClient.setQueryData(['entry', entry.slug], entry);
       queryClient.invalidateQueries({ queryKey: ['entries'] });
       queryClient.invalidateQueries({ queryKey: ['recommendations'] });
